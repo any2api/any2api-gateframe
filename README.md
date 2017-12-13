@@ -103,11 +103,64 @@ Moreover, multiple gateways (like Node.js and Golang) could be combined to run e
 * Global gateway config: blacklist/whitelist of plugins
 * "Eat your own dogfood" - use adapters for admin service of gateway
 * Adapter candidates
-  * ...
+  * REST/HTTP
+  * REST/Kong: https://getkong.org
+  * SOAP/WSDL
+  * GraphQL
+  * https://mmikowski.github.io/json-pure/
+  * https://github.com/uber/tchannel
+  * https://github.com/mikeal/znode
+  * push STDIN messages as Server Sent Events: https://github.com/benas/ssed
+  * Jabber/XMPP
+  * https://www.w3.org/TR/pubsub/
+  * BERT-RPC
+  * cloud-native messaging: http://nats.io
+  * the new REST: http://graphql.org
+  * virtual JSON resource on client: https://netflix.github.io/falcor/
+  * Terraform modules: https://terraform.io/docs/modules/create.html
+  * TOSCA node type
+  * NPM module (exporting JS functions)
+  * Web UI
+  * use redis (or http://webd.is) pub/sub to interact with APIs
+  * use kue to interact with APIs: https://github.com/Automattic/kue
+  * JSON-RPC
+    * http://uber.github.io/multitransport-jsonrpc
+    * http://en.m.wikipedia.org/wiki/JSON-WSP
+  * XML-RPC?
+  * Java RMI?
+  * SocketIO (w/ WebSocket)
+  * SockJS
+  * SQL
+  * Thrift
+  * microservice frameworks
+    * http://senecajs.org
+    * https://hemerajs.github.io/hemera-site/
+  * Kafka, KafkaStreams: https://dev.to/danlebrero/simplifying-your-microservices-architecture-with-kafka-and-kafkastreams
   * CLI adapter (docs endpoint with usage info and how to install CLI tool)
+    * interactive CLI using a library such as https://www.npmjs.com/package/inquirer
 * Intermediary candidates
+  * Token-based Authentication
+  * API Monitoring & Prometheus Metrics Pull Interface (requests per minute, etc.)
+  * Interface Filter (hide gRPC operation/parameter, etc.)
+  * Circuit Breaker
+  * Request Rate Limiting
+  * Monitoring (DataDog?)
+  * Authentication (OpenID?)
+  * Authorization (OAuth 2.0)
+  * Auditing & Logging
+  * Request size limiting
+  * Request filtering (by content or headers)
+  * Request transformer
+  * Response transformer
+  * Correlation ID
+  * see https://getkong.org plugins for more ideas
   * ...
 * Connector candidates
+  * OpenAPI
+  * AWS Lambda
+  * gRPC API Merge/Combine Connector to consolidate multiple gRPC APIs into a single one, which is then provided to the first intermediary
+  * https://wrapapi.com
+  * DB connector, e.g. mongodb-connector to expose DB functionality through any kind of API
   * ...
 * Allow local "one-file" plugins to be loaded into any2api-gateway during start
 * **TODO** any2api backlog: move relevant aspects to here!
