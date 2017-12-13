@@ -1,0 +1,24 @@
+{
+  "name": "any2api-gateway",
+  "version": "0.0.1",
+  "description": "any2api gateway",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/any2api/any2api-gateway.git"
+  },
+  "keywords": [
+    "any2api",
+    "gateway",
+    "grpc"
+  ],
+  "author": "Johannes Wettinger",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/any2api/any2api-gateway/issues"
+  },
+  "homepage": "https://github.com/any2api/any2api-gateway#readme"
+}
