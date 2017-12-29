@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/any.proto";
+
+package any2api.gateway;
+
+service Admin {
+  rpc CreateConfig (CreateConfigRequest) returns (Config);
+  rpc DeleteConfig (DeleteConfigRequest) returns (google.protobuf.Empty);
+  rpc GetConfig (GetConfigRequest) returns (Config);
+}
+
+message Config {
+
+  message ProtoService {
+    // optional package name to override package in proto definition
+    string proto_package_name = 1;
+    // inline proto definition or URL to proto definition
+    oneof def_or_url {
+      string proto_definition = 2;
+      string proto_url = 3;
+    }
+
+    // dns name or ip at which the service is available
+    string host = 4;
+    // port under which the service is available at the host
+    uint32 port = 5;
+  }
+
+  message Plugin {
+    string plugin_name = 1; // npm package name
+    google.protobuf.Any plugin_config = 2;
+  }
+
+  oneof proto_or_connector {
+    ProtoService proto_service = 2;
+    Plugin connector = 3;
+  }
+  repeated Plugin intermediaries = 4;
+  Plugin adapter = 5; 
+}
+
+message CreateConfigRequest {
+  Config config = 1;
+}
+
+message DeleteConfigRequest {
+  string config_id = 1;
+}
+
+message GetConfigRequest {
+  string config_id = 1;
+}
