@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package any2api.grpc.adapter;
+
+message Config {
+    /**
+      * Port to bind to. Format: `address:port`
+      */
+    string bind_port = 1;
+
+    /**
+      * If true TLS will be disabled.
+      */
+    bool insecure = 2;
+}

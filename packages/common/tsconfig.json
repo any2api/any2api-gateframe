@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "lib": [
+            "es2015"
+        ],
+        "rootDirs": [
+            "lib",
+            "test"
+        ],
+        "target": "es2015",
+        "experimentalDecorators": true,
+        "skipLibCheck": true
+    },
+    "exclude": [
+        "node_modules"
+    ]
+}

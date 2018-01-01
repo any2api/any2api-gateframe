@@ -1,0 +1,49 @@
+{
+  "name": "@any2api/grpc-connector",
+  "version": "0.0.1",
+  "description": "default grpc-connector for the any2api gateway",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "test": "jest --coverage",
+    "test:watch": "jest --watch",
+    "build": "tsc -p ./lib/tsconfig.lib.json --outDir dist/"
+  },
+  "keywords": [
+    "any2api",
+    "plugin",
+    "grpc",
+    "connector"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^21.1.8",
+    "@types/lodash": "^4.14.86",
+    "@types/node": "^8.0.53",
+    "jest": "^21.2.1",
+    "ts-jest": "^21.2.3",
+    "tslint": "^5.8.0",
+    "typescript": "^2.6.2"
+  },
+  "dependencies": {
+    "@any2api/gateway-common": "file:../common",
+    "@reactivex/rxjs": "^5.5.6",
+    "grpc": "^1.8.0",
+    "lodash": "^4.17.4",
+    "protobufjs": "~6.8.3"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.ts?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(js?|ts?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json"
+    ]
+  }
+}
