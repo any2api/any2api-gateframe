@@ -139,6 +139,8 @@ Moreover, multiple gateways (like Node.js and Golang) could be combined to run e
   * CLI adapter (docs endpoint with usage info and how to install CLI tool)
     * interactive CLI using a library such as https://www.npmjs.com/package/inquirer
 * Intermediary candidates
+  * Service mesh like Envoy
+  * "Sidecar for endpoint security" (TW Tech Radar)
   * Token-based Authentication
   * API Monitoring & Prometheus Metrics Pull Interface (requests per minute, etc.)
   * Interface Filter (hide gRPC operation/parameter, etc.)
