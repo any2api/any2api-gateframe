@@ -1,10 +1,10 @@
 import { Observable, Observer } from '@reactivex/rxjs';
 import * as grpc from 'grpc';
 
-import { Connector, RequestParameters, Call, GrpcRequestType } from '@any2api/gateway-common';
+import { Connector, RequestParameters, Call, GrpcMethodType, LazyMessageAccesor,
+    MessageAccessor } from '@any2api/gateway-common';
 import { GrpcConnectorConfig } from './config';
 import { CallImplementation } from './call';
-import { EventEmitter } from 'events';
 
 export class GrpcConnector implements Connector {
 
@@ -20,10 +20,10 @@ export class GrpcConnector implements Connector {
 
     public makeRequest(parameters: RequestParameters): Observable<Call> {
         switch (parameters.type) {
-            case GrpcRequestType.Unary: return this.unary(parameters);
-            case GrpcRequestType.ClientStreaming: return this.clientStreaming(parameters);
-            case GrpcRequestType.ServerStreaming: return this.serverStreaming(parameters);
-            case GrpcRequestType.BidirectionalStreaming: return this.bidirectionalStreaming(parameters);
+            case GrpcMethodType.Unary: return this.unary(parameters);
+            case GrpcMethodType.ClientStreaming: return this.clientStreaming(parameters);
+            case GrpcMethodType.ServerStreaming: return this.serverStreaming(parameters);
+            case GrpcMethodType.BidirectionalStreaming: return this.bidirectionalStreaming(parameters);
             default: throw new Error('Type of request not known');
         }
     }
@@ -38,7 +38,8 @@ export class GrpcConnector implements Connector {
             (request) => {
                 const upstreamCall = this.client.makeUnaryRequest(
                     `/${params.method.namespace}/${params.method.name}`,
-                    params.serialize, params.deserialize,
+                    (accessor) => accessor.getBinary(),
+                    (buffer) => new LazyMessageAccesor(params.responseType, buffer),
                     request, params.metadata, params.callOptions,
                     (e, response) => {
                         if (!downstreamCall) {
@@ -71,7 +72,8 @@ export class GrpcConnector implements Connector {
     
             const upstreamCall = this.client.makeClientStreamRequest(
                 `/${params.method.namespace}/${params.method.name}`,
-                params.serialize, params.deserialize,
+                (accessor) => accessor.getBinary(),
+                (buffer) => new LazyMessageAccesor(params.responseType, buffer),
                 params.metadata, params.callOptions,
                 (e, response) => {
                     if (!downstreamCall) {
@@ -108,7 +110,8 @@ export class GrpcConnector implements Connector {
             (request) => {
                 const upstreamCall = this.client.makeServerStreamRequest(
                     `/${params.method.namespace}/${params.method.name}`,
-                    params.serialize, params.deserialize,
+                    (accessor) => accessor.getBinary(),
+                    (buffer) => new LazyMessageAccesor(params.responseType, buffer),
                     request, params.metadata, params.callOptions
                 );
 
@@ -128,7 +131,7 @@ export class GrpcConnector implements Connector {
 
                 upstreamCall.on('data', (res) => {
                     if (!downstreamCall) { return observer.error(new Error('Metadata not received before response')); }
-                    downstreamCall.responseObservable.next(res);
+                    downstreamCall.responseObservable.next(res as any);
                 });
 
                 upstreamCall.on('end', () => {
@@ -148,7 +151,8 @@ export class GrpcConnector implements Connector {
 
             const upstreamCall = this.client.makeBidiStreamRequest(
                 `/${params.method.namespace}/${params.method.name}`,
-                params.serialize, params.deserialize,
+                (accessor) => accessor.getBinary(),
+                (buffer) => new LazyMessageAccesor(params.responseType, buffer),
                 params.metadata, params.callOptions);
 
             // TODO make PR to grpc repository and update type definitions
@@ -167,7 +171,7 @@ export class GrpcConnector implements Connector {
 
             upstreamCall.on('data', (res) => {
                 if (!downstreamCall) { return observer.error(new Error('Metadata not received before response')); }
-                downstreamCall.responseObservable.next(res);
+                downstreamCall.responseObservable.next(res as any);
             });
 
             upstreamCall.on('end', () => {

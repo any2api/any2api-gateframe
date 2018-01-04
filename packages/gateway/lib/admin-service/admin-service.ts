@@ -1,6 +1,13 @@
 import { Config } from './config';
 import { AdapterPlugin, ConnectorPlugin, Plugin } from '@any2api/gateway-common';
 import * as grpcConnector from '@any2api/grpc-connector';
+import { AdapterInitResult, IntermediaryInitResult, ConnectorInitResult } from '@any2api/gateway-common';
+
+interface ConfigInstance {
+    adapter: AdapterInitResult;
+    intermediaries: IntermediaryInitResult[];
+    connector: ConnectorInitResult;
+} 
 
 /**
  * Service for management of configurations.
@@ -8,7 +15,7 @@ import * as grpcConnector from '@any2api/grpc-connector';
 export class AdminService {
 
     private idCounter = 0;
-    private configDict: { [id: string]: Config } = {};
+    private configDict: { [id: string]: { config: Config, instance: ConfigInstance } } = {};
 
     /**
      * 
@@ -20,21 +27,22 @@ export class AdminService {
         const id = String(++this.idCounter);
 
         return this.executeConfig(config)
-            .then(() => {
-                this.configDict[id] = config;
+            .then((instance) => {
+                this.configDict[id] =  { config, instance };
                 return id;
             });
     }
 
     public deleteConfig(id: string) {
-        throw new Error('delete Config is not implemented yet!');
+        const config = this.configDict[id];
+        return config.instance.adapter.instance.gracefullShutdown();
     }
 
     public getConfig(id: string): Config {
-        return this.configDict[id];
+        return this.configDict[id].config;
     }
 
-    private executeConfig = async (config: Config) => {
+    private executeConfig = async (config: Config): Promise<ConfigInstance> => {
         const adapter = this.loadPlugin(config.adapter.pluginName) as AdapterPlugin;
 
         const connector = (config.protoService ?
@@ -52,10 +60,16 @@ export class AdminService {
 
         const connectorInitResult = await connector.init(connectorConfig);
         
-        const adapterInstance = await adapter.init(
+        const adapterInitResult = await adapter.init(
             connectorInitResult.serviceDefinition,
             connectorInitResult.instance,
             config.adapter.pluginConfig);
+
+        return { 
+            adapter: adapterInitResult,
+            intermediaries: [],
+            connector: connectorInitResult
+        };
     }
 
     private loadPlugin(packageName: string): Plugin {

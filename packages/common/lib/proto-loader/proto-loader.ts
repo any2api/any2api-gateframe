@@ -45,4 +45,4 @@ export const loadProtoFromString = async (proto: string): Promise<ProtoBuf.Root>
     } finally {
         tempProtoFile.cleanup();
     }
-}
+};

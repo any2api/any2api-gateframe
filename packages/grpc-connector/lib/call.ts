@@ -5,7 +5,7 @@ import {
 } from 'grpc';
 import { EventEmitter } from 'events';
 
-import { Call } from '@any2api/gateway-common';
+import { Call, MessageAccessor } from '@any2api/gateway-common';
 
 export interface RequestParameters {
     method: string;
@@ -22,7 +22,7 @@ export class CallImplementation implements Call {
     constructor(private grpcCall, public metadata: Metadata) {
     }
 
-    public responseObservable = new Subject<{}>();
+    public responseObservable = new Subject<MessageAccessor<{}>>();
 
     public cancel() {
         this.grpcCall.cancel();

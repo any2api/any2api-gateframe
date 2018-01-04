@@ -48,19 +48,16 @@ ProtoBuf.wrappers['.google.protobuf.Any'] = {
 
 ProtoBuf.wrappers['.google.protobuf.Timestamp'] = {
     
-    fromObject(object: Date | {}) {
-
-        if(typeof(object) === 'string') {
-            object = new Date(object);
+    // TODO: from Object for Timestamp not well supported
+    fromObject(obj) {
+        if (typeof obj.getTime === 'function') {
+            const millis = obj.getTime();
+            const seconds = Math.floor(millis / 1000);
+            
+            return this.create({ seconds, nanos: (millis - seconds * 1000) * 1000000 });
         }
 
-        if (object instanceof Date) {
-            const millis = object.getTime();
-
-            return this.fromObject( { seconds: Math.floor(millis / 1000), nanos: (millis % 1000) * 1000000 });
-        } else {
-            return this.fromObject(object);
-        }
+        return this.fromObject(obj);
     },
 
     toObject(message: any, options) {

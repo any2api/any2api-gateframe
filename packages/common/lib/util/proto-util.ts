@@ -1,5 +1,5 @@
 import * as ProtoBuf from 'protobufjs';
-import { GrpcRequestType } from '../interfaces';
+import { GrpcMethodType } from '../interfaces';
 import { serialize, deserialize } from 'grpc';
 
 export function forEachMethodInProto(proto: ProtoBuf.AnyNestedObject, action: (method: ProtoBuf.Method) => void) {
@@ -10,13 +10,13 @@ export function forEachMethodInProto(proto: ProtoBuf.AnyNestedObject, action: (m
     }
 }
 
-export function grpcMethodTypeOfProto(proto: ProtoBuf.Method) {
+export function grpcMethodTypeOfProto(proto: { requestStream?: boolean, responseStream?: boolean }) {
     if (proto.requestStream) {
-        return proto.responseStream ? GrpcRequestType.BidirectionalStreaming :
-            GrpcRequestType.ClientStreaming;
+        return proto.responseStream ? GrpcMethodType.BidirectionalStreaming :
+            GrpcMethodType.ClientStreaming;
     } else {
-        return proto.responseStream ? GrpcRequestType.ServerStreaming :
-            GrpcRequestType.Unary;
+        return proto.responseStream ? GrpcMethodType.ServerStreaming :
+            GrpcMethodType.Unary;
     }
 }
 
@@ -27,15 +27,11 @@ export function grpcPathOfMethod(proto: ProtoBuf.Method) {
     return `/${serviceName}/${proto.name}`;
 }
 
-export function getMethodInfo(method: ProtoBuf.Method): MethodInfo {
+export function getProtoMethodInfo(method: ProtoBuf.Method): MethodInfo {
     method.resolve();
     return {
         type: grpcMethodTypeOfProto(method),
         name: { namespace: method.parent && method.parent.fullName.substr(1), name: method.name },
-        requestSerialize: serializer(method.resolvedRequestType),
-        requestDeserialize: deserializer(method.resolvedRequestType),
-        responseSerialize: serializer(method.resolvedResponseType),
-        responseDeserialize: deserializer(method.resolvedResponseType),
         requestType: method.resolvedRequestType,
         responseType: method.resolvedResponseType
    };
@@ -43,21 +39,7 @@ export function getMethodInfo(method: ProtoBuf.Method): MethodInfo {
 
 export interface MethodInfo {
     name: { namespace: string, name: string };
-    type: GrpcRequestType;
-    requestSerialize: serialize;
-    requestDeserialize: deserialize;
-    responseSerialize: serialize;
-    responseDeserialize: deserialize;
+    type: GrpcMethodType;
     requestType: ProtoBuf.Type;
     responseType: ProtoBuf.Type;
-}
-
-export function serializer(type: ProtoBuf.Type) {
-    return (value: ProtoBuf.Message<{}> | { [k: string]: any }) => value instanceof ProtoBuf.Message ?
-        type.encode(value).finish() as Buffer :
-        type.encode(type.create(value)).finish() as Buffer;
-}
-
-export function deserializer(type: ProtoBuf.Type) {
-    return (value: Buffer) => type.decode(value);
 }

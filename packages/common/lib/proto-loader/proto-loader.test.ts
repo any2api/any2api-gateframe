@@ -1,4 +1,4 @@
-import { loadProto, loadProtoFromString } from '../proto-loader';
+import { loadProto, loadProtoFromString } from './proto-loader';
 
 test('Test loading proto with google annotation', async () => {
     const proto = await loadProto( __dirname + '/proto-loader.test.proto');

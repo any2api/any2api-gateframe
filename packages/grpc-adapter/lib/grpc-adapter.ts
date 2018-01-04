@@ -2,9 +2,11 @@ import * as grpc from 'grpc';
 import * as ProtoBuf from 'protobufjs';
 import { Observable, Subject } from '@reactivex/rxjs';
 
-import { Adapter, Callable, AdapterInitResult, GrpcRequestType,
-    forEachMethodInProto, getMethodInfo, MethodInfo } from '@any2api/gateway-common';
+import { Adapter, Callable, AdapterInitResult, GrpcMethodType,
+    forEachMethodInProto, getProtoMethodInfo, MethodInfo,
+    LazyMessageAccesor, MessageAccessor } from '@any2api/gateway-common';
 import { GrpcAdapterConfig } from './grpc-adapter-config';
+import { Metadata } from 'grpc';
 
 export class GrpcAdapter implements Adapter {
     private server: grpc.Server;
@@ -47,30 +49,31 @@ export class GrpcAdapter implements Adapter {
     }
 
     private registerMethod(definition: ProtoBuf.Method) {
-        const info = getMethodInfo(definition);
+        const info = getProtoMethodInfo(definition);
 
         const handler = this.handlerMap[info.type].bind(this, info);
 
         this.server.register(
             `/${info.name.namespace}/${info.name.name}`,
             handler,
-            info.responseSerialize,
-            info.requestDeserialize,
+            (accessor) => accessor.getBinary(),
+            (buffer) => new LazyMessageAccesor(definition.resolvedRequestType, buffer),
             info.type);
     }
 
     private unary(info: MethodInfo, call: grpc.ServerUnaryCall, callback: grpc.sendUnaryData) {
         let result;
+
+        (call as any).on('error', console.error);
         
         const upstreamObservable = this.upstream.makeRequest({
             method: info.name,
             requestObservable: Observable.of(call.request),
             metadata: call.metadata,
-            type: GrpcRequestType.Unary,
-            serialize: info.requestSerialize,
-            deserialize: info.responseDeserialize
+            type: GrpcMethodType.Unary,
+            responseType: info.responseType
         })
-            .do((c) => call.sendMetadata(c.metadata))
+            .do((c) => call.sendMetadata(c.header))
             .flatMap((c) => c.responseObservable)
             .subscribe(
                 (r) => result = r,
@@ -79,7 +82,7 @@ export class GrpcAdapter implements Adapter {
     }
 
     private clientStreaming(info: MethodInfo, call: grpc.ServerReadableStream, callback: grpc.sendUnaryData) {
-        const requestSubject = new Subject();
+        const requestSubject = new Subject<LazyMessageAccesor<{}>>();
     
         let result;
         
@@ -87,18 +90,19 @@ export class GrpcAdapter implements Adapter {
             method: info.name,
             requestObservable: requestSubject,
             metadata: call.metadata,
-            type: GrpcRequestType.Unary,
-            serialize: info.requestSerialize,
-            deserialize: info.responseDeserialize
+            type: GrpcMethodType.ClientStreaming,
+            responseType: info.responseType
         })
-            .do((c) => call.sendMetadata(c.metadata))
+            .do((c) => call.sendMetadata(c.header))
             .flatMap((c) => c.responseObservable)
             .subscribe(
                 (r) => result = r,
                 (e: grpc.ServiceError) => callback(e, result, e.metadata),
-                () => callback(null, result, ));
+                () => callback(null, result));
 
-        call.on('data', (req) => requestSubject.next(req));
+        // Observable.fromEvent(call, 'data').subscribe(requestSubject);
+        call.on('data', (req: LazyMessageAccesor<{}>) => requestSubject.next(req));
+        call.on('end', () => requestSubject.complete());
     }
 
     private serverStreaming(info: MethodInfo, call: grpc.ServerWriteableStream) {
@@ -106,11 +110,10 @@ export class GrpcAdapter implements Adapter {
             method: info.name,
             requestObservable: Observable.of(call.request),
             metadata: call.metadata,
-            type: GrpcRequestType.Unary,
-            serialize: info.requestSerialize,
-            deserialize: info.responseDeserialize
+            type: GrpcMethodType.ServerStreaming,
+            responseType: info.responseType
         })
-            .do((c) => call.sendMetadata(c.metadata))
+            .do((c) => call.sendMetadata(c.header))
             .flatMap((c) => c.responseObservable)
             .subscribe(
                 (r) => call.write(r),
@@ -119,24 +122,24 @@ export class GrpcAdapter implements Adapter {
     }
 
     private bidiStreaming(info: MethodInfo, call: grpc.ServerDuplexStream) {
-        const requestSubject = new Subject();
+        const requestSubject = new Subject<LazyMessageAccesor<{}>>();
     
         const upstreamObservable = this.upstream.makeRequest({
             method: info.name,
             requestObservable: requestSubject,
             metadata: (call as any).metadata,
-            type: GrpcRequestType.Unary,
-            serialize: info.requestSerialize,
-            deserialize: info.responseDeserialize
+            type: GrpcMethodType.BidirectionalStreaming,
+            responseType: info.responseType
         })
-            .do((c) => call.sendMetadata(c.metadata))
+            .do((c) => call.sendMetadata(c.header))
             .flatMap((c) => c.responseObservable)
             .subscribe(
                 (r) => call.write(r),
                 (e: grpc.ServiceError) => call.emit('error', e, e.metadata),
                 () => call.end());
 
-        call.on('data', (req) => requestSubject.next(req));
+        call.on('data', (req: LazyMessageAccesor<{}>) => requestSubject.next(req));
+        call.on('end', () => requestSubject.complete());
     }
 
     public gracefullShutdown(): Promise<void> {

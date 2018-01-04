@@ -16,6 +16,9 @@ let grpcServerPort: number;
 
 let gatewayGrpcPort: number;
 
+const adminService = new AdminService();
+let configId;
+
 const loadProto = async () => {
     tempProtoFile = await tmp.file({postfix: '.proto'});
 
@@ -50,8 +53,6 @@ const createGrpcServer = async () => {
 
 const createGateway = async () => {
     gatewayGrpcPort = await getPortPromise();
-
-    const adminService = new AdminService();
     
     const config: Config = {
         protoService: {
@@ -69,9 +70,7 @@ const createGateway = async () => {
         intermediaries: []
     };
 
-    const id = await adminService.createConfig(config);
-
-    console.log(id);
+    configId = await adminService.createConfig(config);
 };
 
 beforeAll(async () => {
@@ -84,6 +83,7 @@ beforeAll(async () => {
 
 afterAll(() => {
     grpcServer.forceShutdown();
+    adminService.deleteConfig(configId);
 });
 
 test('basic server test', (done) => {

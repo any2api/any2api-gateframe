@@ -1,7 +1,9 @@
-import { Metadata, serialize, deserialize, CallOptions, ServiceError } from 'grpc';
+import { Metadata, serialize, deserialize, CallOptions, ServiceError, StatusObject } from 'grpc';
 import { Observable } from '@reactivex/rxjs';
+import * as ProtoBuf from 'protobufjs';
+import { MessageAccessor } from '../index';
 
-export enum GrpcRequestType {
+export enum GrpcMethodType {
     Unary = 'unary',
     ClientStreaming = 'client_stream',
     ServerStreaming = 'server_stream',
@@ -10,17 +12,17 @@ export enum GrpcRequestType {
 
 export interface RequestParameters {
     method: { namespace: string, name: string };
-    type: GrpcRequestType;
-    requestObservable: Observable<{ [props: string]: any }>;
+    type: GrpcMethodType;
+    requestObservable: Observable<MessageAccessor<{}>>;
+    responseType: ProtoBuf.Type;
     metadata?: Metadata;
-    serialize: serialize;
-    deserialize: deserialize;
     callOptions?: CallOptions;
 }
 
 export interface Call {
-    responseObservable: Observable<{ [props: string]: any }>;
-    metadata: Metadata;
+    header: Metadata;
+    responseObservable: Observable<MessageAccessor<{}>>;
+    status: Observable<StatusObject>;
 
     cancel();
     getPeer(): string;
