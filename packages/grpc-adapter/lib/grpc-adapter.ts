@@ -4,9 +4,47 @@ import { Observable, Subject } from '@reactivex/rxjs';
 
 import { Adapter, Callable, AdapterInitResult, GrpcMethodType,
     forEachMethodInProto, getProtoMethodInfo, MethodInfo,
-    LazyMessageAccesor, MessageAccessor } from '@any2api/gateway-common';
+    LazyMessageAccesor, MessageAccessor, Call } from '@any2api/gateway-common';
 import { GrpcAdapterConfig } from './grpc-adapter-config';
-import { Metadata } from 'grpc';
+import { Metadata, StatusObject } from 'grpc';
+
+function serverStreamingHandler(downCall: grpc.ServerWriteableStream, upCall: Call) {
+    downCall.sendMetadata(upCall.header);
+
+    let responsesCompleted = false;
+    let status;
+
+    const sendStatus = () => {
+        if (responsesCompleted && status) {
+            if (status.code === grpc.status.OK) {
+                downCall.end(status.metadata);
+            } else {
+                downCall.emit('error', { name: status.details, ...status });
+            }
+        }
+    };
+
+    upCall.responseObservable.subscribe(
+        (r) => downCall.write(r),
+        (e) => downCall.emit('error', e),
+        () => { responsesCompleted = true; sendStatus(); });
+    
+    upCall.status.subscribe((s) => { status = s; sendStatus(); });
+}
+
+function callbackHandler(downCall: grpc.ServerUnaryCall, callback: grpc.sendUnaryData, upCall: Call) {
+    downCall.sendMetadata(upCall.header);
+    Observable.zip(upCall.responseObservable, upCall.status)
+        .subscribe(
+            ([r, status]) => {
+                if (status.code === grpc.status.OK) {
+                    callback(null, r, status.metadata);
+                } else {
+                    callback({ name: status.details, ...status } as any, null, status.metadata);
+                }
+            },
+            (e) => callback(e, null));
+}
 
 export class GrpcAdapter implements Adapter {
     private server: grpc.Server;
@@ -62,29 +100,17 @@ export class GrpcAdapter implements Adapter {
     }
 
     private unary(info: MethodInfo, call: grpc.ServerUnaryCall, callback: grpc.sendUnaryData) {
-        let result;
-
-        (call as any).on('error', console.error);
-        
         const upstreamObservable = this.upstream.makeRequest({
             method: info.name,
             requestObservable: Observable.of(call.request),
             metadata: call.metadata,
             type: GrpcMethodType.Unary,
             responseType: info.responseType
-        })
-            .do((c) => call.sendMetadata(c.header))
-            .flatMap((c) => c.responseObservable)
-            .subscribe(
-                (r) => result = r,
-                (e: grpc.ServiceError) => callback(e, result, e.metadata),
-                () => callback(null, result));
+        }).subscribe(callbackHandler.bind(this, call, callback));
     }
 
     private clientStreaming(info: MethodInfo, call: grpc.ServerReadableStream, callback: grpc.sendUnaryData) {
         const requestSubject = new Subject<LazyMessageAccesor<{}>>();
-    
-        let result;
         
         const upstreamObservable = this.upstream.makeRequest({
             method: info.name,
@@ -92,13 +118,7 @@ export class GrpcAdapter implements Adapter {
             metadata: call.metadata,
             type: GrpcMethodType.ClientStreaming,
             responseType: info.responseType
-        })
-            .do((c) => call.sendMetadata(c.header))
-            .flatMap((c) => c.responseObservable)
-            .subscribe(
-                (r) => result = r,
-                (e: grpc.ServiceError) => callback(e, result, e.metadata),
-                () => callback(null, result));
+        }).subscribe(callbackHandler.bind(this, call, callback));
 
         // Observable.fromEvent(call, 'data').subscribe(requestSubject);
         call.on('data', (req: LazyMessageAccesor<{}>) => requestSubject.next(req));
@@ -112,13 +132,7 @@ export class GrpcAdapter implements Adapter {
             metadata: call.metadata,
             type: GrpcMethodType.ServerStreaming,
             responseType: info.responseType
-        })
-            .do((c) => call.sendMetadata(c.header))
-            .flatMap((c) => c.responseObservable)
-            .subscribe(
-                (r) => call.write(r),
-                (e: grpc.ServiceError) => call.emit('error', e, e.metadata),
-                () => call.end());
+        }).subscribe(serverStreamingHandler.bind(this, call), (e) => call.emit('error', e));
     }
 
     private bidiStreaming(info: MethodInfo, call: grpc.ServerDuplexStream) {
@@ -130,13 +144,7 @@ export class GrpcAdapter implements Adapter {
             metadata: (call as any).metadata,
             type: GrpcMethodType.BidirectionalStreaming,
             responseType: info.responseType
-        })
-            .do((c) => call.sendMetadata(c.header))
-            .flatMap((c) => c.responseObservable)
-            .subscribe(
-                (r) => call.write(r),
-                (e: grpc.ServiceError) => call.emit('error', e, e.metadata),
-                () => call.end());
+        }).subscribe(serverStreamingHandler.bind(this, call), (e) => call.emit('error', e));
 
         call.on('data', (req: LazyMessageAccesor<{}>) => requestSubject.next(req));
         call.on('end', () => requestSubject.complete());

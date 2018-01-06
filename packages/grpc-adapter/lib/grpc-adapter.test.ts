@@ -11,6 +11,7 @@ import { GrpcAdapter } from './grpc-adapter';
 import { Subject } from '../../common/node_modules/@reactivex/rxjs/dist/package/Subject';
 import { request } from 'https';
 import { ReplaySubject } from '../../common/node_modules/@reactivex/rxjs/dist/package/ReplaySubject';
+import { status } from 'grpc';
 
 function multiDone(done, amount) {
     let counter = 0;
@@ -22,7 +23,8 @@ function multiDone(done, amount) {
 }
 
 let requestMetadata: grpc.Metadata;
-let responseMetadata: grpc.Metadata;
+let responseHeaderMetadata: grpc.Metadata;
+let responseTrailerMetadata: grpc.Metadata;
 let proto: ProtoBuf.Root;
 let M: ProtoBuf.Type;
 let port: number;
@@ -69,8 +71,11 @@ beforeEach((done) => {
     requestMetadata = new grpc.Metadata();
     requestMetadata.add('foo', 'boobar');
 
-    responseMetadata = new grpc.Metadata();
-    responseMetadata.add('bar', 'barfoo');
+    responseHeaderMetadata = new grpc.Metadata();
+    responseHeaderMetadata.add('bar', 'barfoo');
+
+    responseTrailerMetadata = new grpc.Metadata();
+    responseTrailerMetadata.add('foobar', 'bar');
 
     if (upstreamMock) {
         upstreamMock.mockClear();
@@ -102,13 +107,14 @@ function callFrom(requests: Observable<any>, ...elements: Array<{ m: string }>):
     return {
         cancel: () => ({}),
         getPeer: () => '',
-        metadata: responseMetadata,
+        header: responseHeaderMetadata,
+        status: Observable.of({ code: grpc.status.OK, details: 'OK', metadata: responseTrailerMetadata }),
         responseObservable: responses
     };
 }
 
 test('unary call test', (done) => {
-    expect.assertions(6);
+    expect.assertions(8);
 
     upstreamMock.mockImplementation((upstreamParameters: RequestParameters): Observable<Call> => {
         upstreamParameters.requestObservable = upstreamParameters.requestObservable.shareReplay();
@@ -140,7 +146,12 @@ test('unary call test', (done) => {
     });
 
     unaryCall.on('metadata', (metadata) => {
-        expect(metadata.getMap()).toMatchObject(responseMetadata.getMap());
+        expect(metadata.getMap()).toMatchObject(responseHeaderMetadata.getMap());
+    });
+
+    unaryCall.on('status', (s) => {
+        expect(s.code).toBe(grpc.status.OK);
+        expect(s.metadata.getMap()).toMatchObject(responseTrailerMetadata.getMap());
     });
 });
 
@@ -181,7 +192,7 @@ test('client stream call', (done) => {
     clientStreamCall.write({ m: 'foobar' });
 
     clientStreamCall.on('metadata', (metadata) => {
-        expect(metadata.getMap()).toMatchObject(responseMetadata.getMap());
+        expect(metadata.getMap()).toMatchObject(responseHeaderMetadata.getMap());
     });
 
     clientStreamCall.on('error', (e) => fail(e));
@@ -217,7 +228,7 @@ test('server streaming call', (done) => {
     const serverStreamingCall = client.serverStream({ m: 'foo' }, requestMetadata);
 
     serverStreamingCall.on('metadata', (metadata) => {
-        expect(metadata.getMap()).toMatchObject(responseMetadata.getMap());
+        expect(metadata.getMap()).toMatchObject(responseHeaderMetadata.getMap());
     });
 
     serverStreamingCall.on('error', (e) => fail(e));
@@ -259,7 +270,7 @@ test('bidi stream call', (done) => {
     const bidiCall = client.bidiStream(requestMetadata);
 
     bidiCall.on('metadata', (metadata) => {
-        expect(metadata.getMap()).toMatchObject(responseMetadata.getMap());
+        expect(metadata.getMap()).toMatchObject(responseHeaderMetadata.getMap());
     });
 
     bidiCall.on('error', (e) => fail(e));
