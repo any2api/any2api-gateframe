@@ -1,28 +1,26 @@
 import { Observable, Subject } from '@reactivex/rxjs';
-import {
-    Metadata, StatusObject, ClientUnaryCall, ClientReadableStream, ClientWritableStream, ClientDuplexStream,
-    requestCallback, handleServerStreamingCall, serialize, deserialize, CallOptions
-} from 'grpc';
+import * as grpc from 'grpc';
 import { EventEmitter } from 'events';
 
-import { Call, MessageAccessor } from '@any2api/gateway-common';
+import { Call, MessageAccessor, GrpcMethodType } from '@any2api/gateway-common';
 
 export interface RequestParameters {
     method: string;
-    type: GrpcRequestType;
+    type: GrpcMethodType;
     requestObservable: Observable<{ [props: string]: any }>;
-    metadata?: Metadata;
-    serialize: serialize;
-    deserialize: deserialize;
-    callOptions?: CallOptions;
+    metadata?: grpc.Metadata;
+    serialize: grpc.serialize;
+    deserialize: grpc.deserialize;
+    callOptions?: grpc.CallOptions;
 }
 
 export class CallImplementation implements Call {
 
-    constructor(private grpcCall, public metadata: Metadata) {
-    }
+    constructor(private grpcCall, public header: grpc.Metadata) {}
 
     public responseObservable = new Subject<MessageAccessor<{}>>();
+
+    public status = new Subject<grpc.StatusObject>();
 
     public cancel() {
         this.grpcCall.cancel();
@@ -31,11 +29,4 @@ export class CallImplementation implements Call {
     public getPeer() {
         return this.grpcCall.getPeer();
     }
-}
-
-export enum GrpcRequestType {
-    Unary = 'unary',
-    ClientStreaming = 'client_stream',
-    ServerStreaming = 'server_stream',
-    BidirectionalStreaming = 'bidi'
 }

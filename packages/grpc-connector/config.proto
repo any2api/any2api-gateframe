@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+package any2api.grpc.connector;
+
 message Config {
     string address = 1;
     

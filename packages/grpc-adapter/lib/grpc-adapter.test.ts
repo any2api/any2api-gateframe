@@ -1,6 +1,6 @@
 import * as ProtoBuf from 'protobufjs';
 import * as grpc from 'grpc';
-import { Observable } from '@reactivex/rxjs';
+import { Observable, Subject, ReplaySubject } from '@reactivex/rxjs';
 import { getPortPromise } from 'portfinder';
 
 import { loadProtoFromString, Call, LazyMessageAccesor, GrpcMethodType,
@@ -8,19 +8,6 @@ import { loadProtoFromString, Call, LazyMessageAccesor, GrpcMethodType,
 
 import { grpcAdapterPlugin } from './grpc-adapter-plugin';
 import { GrpcAdapter } from './grpc-adapter';
-import { Subject } from '../../common/node_modules/@reactivex/rxjs/dist/package/Subject';
-import { request } from 'https';
-import { ReplaySubject } from '../../common/node_modules/@reactivex/rxjs/dist/package/ReplaySubject';
-import { status } from 'grpc';
-
-function multiDone(done, amount) {
-    let counter = 0;
-    return () => {
-        if (++counter === amount) {
-            done();
-        }
-    };
-}
 
 let requestMetadata: grpc.Metadata;
 let responseHeaderMetadata: grpc.Metadata;

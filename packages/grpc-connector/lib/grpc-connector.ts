@@ -45,19 +45,24 @@ export class GrpcConnector implements Connector {
                         if (!downstreamCall) {
                             return observer.error(new Error('Metadata not received before response'));
                         }
-                        if (e) { return observer.error(e); }
+                        if (e === null) { 
+                            downstreamCall.responseObservable.next(response);
+                        }
 
-                        downstreamCall.responseObservable.next(response);
                         downstreamCall.responseObservable.complete();
                     }
                 );
 
-                // TODO make PR to grpc repository and update type definitions
                 (upstreamCall as any).on('metadata', (m) => {
                     downstreamCall = new CallImplementation(upstreamCall, m);
                 
                     observer.next(downstreamCall);
                     observer.complete();
+                });
+
+                (upstreamCall as any).on('status', (status) => {
+                    downstreamCall.status.next(status);
+                    downstreamCall.status.complete();
                 });
             },
             (e) => observer.error(e));
@@ -74,28 +79,35 @@ export class GrpcConnector implements Connector {
                 `/${params.method.namespace}/${params.method.name}`,
                 (accessor) => accessor.getBinary(),
                 (buffer) => new LazyMessageAccesor(params.responseType, buffer),
-                params.metadata, params.callOptions,
+                params.metadata,
+                params.callOptions,
                 (e, response) => {
+                    if (e) { return observer.error(e); }
                     if (!downstreamCall) {
                         return observer.error(new Error('Metadata not received before response'));
                     }
-                    if (e) { return observer.error(e); }
 
                     downstreamCall.responseObservable.next(response);
                     downstreamCall.responseObservable.complete();
                 });
 
-            (upstreamCall as any).on('metadata', (m) => {
+            upstreamCall.on('metadata', (m) => {
                 downstreamCall = new CallImplementation(upstreamCall, m);
             
                 observer.next(downstreamCall);
                 observer.complete();
             });
 
-            params.requestObservable.subscribe(
+            upstreamCall.on('status', (status) => {
+                downstreamCall.status.next(status);
+                downstreamCall.status.complete();
+            });
+
+            params.requestObservable
+                .subscribe(
                 (request) => upstreamCall.write(request),
                 null,
-                () => upstreamCall.end()
+                () => { upstreamCall.end(); }
             );
         });
     }
@@ -115,7 +127,6 @@ export class GrpcConnector implements Connector {
                     request, params.metadata, params.callOptions
                 );
 
-                // TODO make PR to grpc repository and update type definitions
                 upstreamCall.on('metadata', (m) => {
                     downstreamCall = new CallImplementation(upstreamCall, m);
                 
@@ -129,9 +140,14 @@ export class GrpcConnector implements Connector {
                         .error(e);
                 });
 
-                upstreamCall.on('data', (res) => {
+                upstreamCall.on('data', (res: MessageAccessor<{}>) => {
                     if (!downstreamCall) { return observer.error(new Error('Metadata not received before response')); }
-                    downstreamCall.responseObservable.next(res as any);
+                    downstreamCall.responseObservable.next(res);
+                });
+
+                upstreamCall.on('status', (status) => {
+                    downstreamCall.status.next(status);
+                    downstreamCall.status.complete();
                 });
 
                 upstreamCall.on('end', () => {
@@ -155,7 +171,6 @@ export class GrpcConnector implements Connector {
                 (buffer) => new LazyMessageAccesor(params.responseType, buffer),
                 params.metadata, params.callOptions);
 
-            // TODO make PR to grpc repository and update type definitions
             upstreamCall.on('metadata', (m) => {
                 downstreamCall = new CallImplementation(upstreamCall, m);
             
@@ -172,6 +187,11 @@ export class GrpcConnector implements Connector {
             upstreamCall.on('data', (res) => {
                 if (!downstreamCall) { return observer.error(new Error('Metadata not received before response')); }
                 downstreamCall.responseObservable.next(res as any);
+            });
+
+            upstreamCall.on('status', (status) => {
+                downstreamCall.status.next(status);
+                downstreamCall.status.complete();
             });
 
             upstreamCall.on('end', () => {
