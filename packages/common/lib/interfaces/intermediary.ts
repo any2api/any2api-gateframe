@@ -1,9 +1,7 @@
 import { Observable } from '@reactivex/rxjs';
 import { RequestParameters, Call } from './request';
+import { Callable } from '../index';
 
-export interface Intermediary {
-    makeRequest(
-        parameters: RequestParameters,
-        next: (parameters: RequestParameters) => Observable<Call>
-    ): Observable<Call>;
+// tslint:disable-next-line:no-empty-interface
+export interface Intermediary extends Callable {
 }

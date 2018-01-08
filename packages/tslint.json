@@ -60,6 +60,7 @@
             "allow-null-check"
         ],
         "ordered-imports": false,
-        "member-ordering": false
+        "member-ordering": false,
+        "no-unused-variable": true
     }
 }

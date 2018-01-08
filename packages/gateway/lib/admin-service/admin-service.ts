@@ -1,7 +1,8 @@
-import { Config } from './config';
-import { AdapterPlugin, ConnectorPlugin, Plugin } from '@any2api/gateway-common';
-import * as grpcConnector from '@any2api/grpc-connector';
-import { AdapterInitResult, IntermediaryInitResult, ConnectorInitResult } from '@any2api/gateway-common';
+import { AdapterPlugin, ConnectorPlugin, Plugin, Intermediary,
+    Adapter, Connector, InitResult, IntermediaryPlugin, Callable,
+    AdapterInitResult, IntermediaryInitResult, ConnectorInitResult  } from '@any2api/gateway-common';
+    
+import { Config, PluginDefinition } from './config';
 
 interface ConfigInstance {
     adapter: AdapterInitResult;
@@ -43,11 +44,8 @@ export class AdminService {
     }
 
     private executeConfig = async (config: Config): Promise<ConfigInstance> => {
-        const adapter = this.loadPlugin(config.adapter.pluginName) as AdapterPlugin;
 
-        const connector = (config.protoService ?
-            this.loadPlugin('@any2api/grpc-connector') : this.loadPlugin(config.connector.pluginName)
-            ) as ConnectorPlugin;
+        const connector = this.loadConnector(config);
         
         const connectorConfig = config.protoService ?
             { 
@@ -59,26 +57,75 @@ export class AdminService {
             : config.connector.pluginConfig;
 
         const connectorInitResult = await connector.init(connectorConfig);
-        
+
+        const intermediaryInitResults: IntermediaryInitResult[] = [];
+
+        const upstream =
+            await config.intermediaries.reduceRight(
+                async (upPromise: Promise<{ instance: Callable, serviceDefinition }>, intermediaryDefinition)  => {
+                    const intermediary = this.loadPlugin(intermediaryDefinition) as IntermediaryPlugin;
+
+                    const up = await upPromise;
+                    
+                    const initResult = await intermediary.init(
+                        up.serviceDefinition,
+                        up.instance,
+                        intermediaryDefinition.pluginConfig);
+                    
+                    intermediaryInitResults.unshift(initResult);
+
+                    return {
+                        instance: initResult.instance,
+                        serviceDefinition: initResult.updatedServiceDefinition || up.serviceDefinition
+                    };
+                },
+                Promise.resolve(connectorInitResult));
+
+        const adapter = this.loadPlugin(config.adapter) as AdapterPlugin;
+
         const adapterInitResult = await adapter.init(
-            connectorInitResult.serviceDefinition,
-            connectorInitResult.instance,
+            upstream.serviceDefinition,
+            upstream.instance,
             config.adapter.pluginConfig);
 
         return { 
             adapter: adapterInitResult,
-            intermediaries: [],
+            intermediaries: intermediaryInitResults,
             connector: connectorInitResult
         };
     }
 
-    private loadPlugin(packageName: string): Plugin {
-        const plugin = require(packageName);
+    private loadConnector(config: Config): ConnectorPlugin {
+        if (config.protoService) {
+            return this.loadPluginPackage('@any2api/grpc-connector') as ConnectorPlugin;
+        } else {
+            if (config.connector.plugin) {
+                return config.connector.plugin as ConnectorPlugin;
+            } else {
+                return this.loadPluginPackage(config.connector.pluginName) as ConnectorPlugin;
+            }
+        }
+    }
+
+    private loadPlugin(pluginDefinition: PluginDefinition): Plugin {
+        if (pluginDefinition.plugin) {
+            return pluginDefinition.plugin;
+        } else {
+            return this.loadPluginPackage(pluginDefinition.pluginName);
+        }
+    }
+
+    private loadPluginPackage(name: string): Plugin {
+        const plugin = require(name);
 
         if (!plugin) {
             throw new Error('Could not require plugin package');
         }
 
         return plugin;
+    }
+
+    private isPluginDefinition(plugin: { packageName?: string }) {
+        return typeof plugin.packageName === 'string';
     }
 }

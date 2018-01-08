@@ -3,8 +3,8 @@ import { GrpcMethodType } from '../interfaces';
 import { serialize, deserialize } from 'grpc';
 
 export function forEachMethodInProto(proto: ProtoBuf.AnyNestedObject, action: (method: ProtoBuf.Method) => void) {
-    if (proto instanceof ProtoBuf.Service) {
-        proto.methodsArray.forEach(action);
+    if ((proto as any).methodsArray) {
+        (proto as ProtoBuf.Service).methodsArray.forEach(action);
     } else if ((proto as any).nestedArray) {
         (proto as any).nestedArray.forEach((n) => forEachMethodInProto(n, action));
     }

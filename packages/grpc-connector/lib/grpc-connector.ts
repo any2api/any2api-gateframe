@@ -36,6 +36,9 @@ export class GrpcConnector implements Connector {
             .take(1)
             .subscribe(
             (request) => {
+                // workaround for argue js type checking
+                Object.setPrototypeOf(params.metadata, Object.getPrototypeOf(new grpc.Metadata()));
+
                 const upstreamCall = this.client.makeUnaryRequest(
                     `/${params.method.namespace}/${params.method.name}`,
                     (accessor) => accessor.getBinary(),

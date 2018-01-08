@@ -4,9 +4,10 @@ import * as grpc from 'grpc';
 import * as ProtoBuf from 'protobufjs';
 import { writeFile } from 'fs';
 import * as tmp from 'tmp-promise';
+import { loadProtoFromString, IntermediaryPlugin, IntermediaryInitResult,
+    RequestParameters } from '@any2api/gateway-common';
 
 const protoDefinition = 'syntax = "proto3"; message M { string bar = 1; } service S { rpc foo(M) returns (M); }';
-let tempProtoFile: {path: string, cleanup: () => void };
 let protoRoot: ProtoBuf.Root;
 let messageType: ProtoBuf.Type;
 let service;
@@ -20,18 +21,7 @@ const adminService = new AdminService();
 let configId;
 
 const loadProto = async () => {
-    tempProtoFile = await tmp.file({postfix: '.proto'});
-
-    // write proto to temp file, as protobufjs needs a filename
-    await new Promise<void>((resolve, reject) => {
-        writeFile(tempProtoFile.path, protoDefinition, (err) => {
-            if (err) { return reject(err); }
-
-            resolve();
-        });
-    });
-
-    protoRoot = await ProtoBuf.load(tempProtoFile.path);
+    protoRoot = await loadProtoFromString(protoDefinition);
     messageType = protoRoot.lookupType('.M');
 
     service = grpc.loadObject(protoRoot.lookupService('.S'));
@@ -51,8 +41,38 @@ const createGrpcServer = async () => {
     grpcServer.start();
 };
 
+let requestThroughIntermediary: any[];
+let responseThroughIntermediary: any[];
+
+beforeEach(() => {
+    requestThroughIntermediary = [];
+    responseThroughIntermediary = [];
+});
+
+const mockIntermediary: IntermediaryPlugin = {
+    init: (serviceDef, upstream) => {
+        const initResult = {
+            instance: {
+                makeRequest: (requestParameters: RequestParameters) => {
+                    requestParameters.requestObservable = requestParameters.requestObservable
+                        .do((r) => requestThroughIntermediary.push(r.getMessage()));
+
+                    return upstream.makeRequest(requestParameters)
+                        .map((call) => {
+                            call.responseObservable = call.responseObservable.do(
+                                (r) => responseThroughIntermediary.push(r.getMessage())
+                            );
+                            return call;
+                        });
+                }
+            }
+        };
+        return initResult;
+    }
+};
+
 const createGateway = async () => {
-    gatewayGrpcPort = await getPortPromise();
+    gatewayGrpcPort = await getPortPromise({ port: 9000 });
     
     const config: Config = {
         protoService: {
@@ -60,14 +80,14 @@ const createGateway = async () => {
             host: 'localhost',
             port: grpcServerPort
         },
+        intermediaries: [ { plugin: mockIntermediary }],
         adapter: {
             pluginName: '@any2api/grpc-adapter',
             pluginConfig: {
                 insecure: true,
                 port: `0.0.0.0:${gatewayGrpcPort}`
             }
-        },
-        intermediaries: []
+        }
     };
 
     configId = await adminService.createConfig(config);
@@ -77,8 +97,6 @@ beforeAll(async () => {
     await loadProto();
     await createGrpcServer();
     await createGateway();
-
-    tempProtoFile.cleanup();
 });
 
 afterAll(() => {
@@ -94,6 +112,9 @@ test('basic server test', (done) => {
     client.foo({ bar: 'bar' }, (err, response) => {
         expect(err).toBeNull();
         expect(response.bar).toBe('foobar');
+
+        expect(requestThroughIntermediary).toEqual([]);
+        expect(responseThroughIntermediary).toEqual([]);
         done();
     });
 });
@@ -106,6 +127,10 @@ test('basic gateway test', (done) => {
     client.foo({ bar: 'bar' }, (err, response) => {
         expect(err).toBeNull();
         expect(response.bar).toBe('foobar');
+
+        expect(requestThroughIntermediary).toEqual([{ bar: 'bar' }]);
+        expect(responseThroughIntermediary).toEqual([{ bar: 'foobar' }]);
+
         done();
     });
 });

@@ -1,11 +1,13 @@
+import { Plugin } from '@any2api/gateway-common';
+
 export interface Config {
     protoService?: ProtoService|null;
     
-    connector?: Plugin|null;
+    connector?: PluginDefinition |null;
 
-    intermediaries: Plugin[];
+    intermediaries: PluginDefinition[];
 
-    adapter: Plugin;
+    adapter: PluginDefinition;
 }
 
 export interface ProtoService {
@@ -20,8 +22,10 @@ export interface ProtoService {
     port: number;
 }
 
-export interface Plugin {
-    pluginName: string;
+export interface PluginDefinition {
+    pluginName?: string;
+
+    plugin?: Plugin;
     
     pluginConfig?: any|null;
 }

@@ -34,7 +34,7 @@ export interface IntermediaryInitResult extends InitResult {
 }
 
 export interface IntermediaryPlugin extends Plugin {
-    init(serviceDefinition: ProtoBuf.Namespace, config?: any):
+    init(serviceDefinition: ProtoBuf.Namespace, upstream: Callable, config?: any):
         Promise<IntermediaryInitResult> | IntermediaryInitResult;
 }
 
