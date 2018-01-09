@@ -78,7 +78,7 @@ message GetConfigResponse {
 This admin API can be disabled, for example for security purposes.
 An alternative to using the admin API is providing `Config` messages as JSON files that are read by the any2api-gateway during start.
 Plugins are available as npm modules.
-They are fetched and loaded on demand when configurations are added.
+They are specified as npm dependencies at deployment time of the gateway.
 
 
 
