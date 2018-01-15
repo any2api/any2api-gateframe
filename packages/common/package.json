@@ -1,7 +1,7 @@
 {
     "name": "@any2api/gateframe-common",
     "version": "0.0.1",
-    "description": "package of common modules for the any2api gateway",
+    "description": "package of common modules for the any2api gateframe",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "engines": {
@@ -15,7 +15,7 @@
     },
     "keywords": [
         "any2api",
-        "gateway"
+        "gateframe"
     ],
     "author": "",
     "license": "MIT",

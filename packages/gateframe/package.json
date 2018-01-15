@@ -1,7 +1,7 @@
 {
-  "name": "@any2api/gateway",
+  "name": "@any2api/gateframe",
   "version": "0.0.1",
-  "description": "any2api gateway",
+  "description": "any2api gateframe",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "engines": {
@@ -17,19 +17,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/any2api/any2api-gateway.git"
+    "url": "git+https://github.com/any2api/any2api-gateframe.git"
   },
   "keywords": [
     "any2api",
-    "gateway",
+    "gateframe",
     "grpc"
   ],
   "author": "Johannes Wettinger",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/any2api/any2api-gateway/issues"
+    "url": "https://github.com/any2api/any2api-gateframe/issues"
   },
-  "homepage": "https://github.com/any2api/any2api-gateway#readme",
+  "homepage": "https://github.com/any2api/any2api-gateframe#readme",
   "devDependencies": {
     "@types/jest": "^21.1.8",
     "@types/lodash": "^4.14.86",
@@ -45,9 +45,9 @@
     "typescript": "^2.6.2"
   },
   "dependencies": {
-    "@any2api/gateframe-common": "file:../common",
-    "@any2api/grpc-adapter": "file:../grpc-adapter",
-    "@any2api/grpc-connector": "file:../grpc-connector",
+    "@any2api/gateframe-common": "^0.0.1",
+    "@any2api/grpc-adapter": "^0.0.1",
+    "@any2api/grpc-connector": "^0.0.1",
     "@reactivex/rxjs": "^5.5.6",
     "google-proto-files": "^0.14.1",
     "grpc": "^1.7.2",

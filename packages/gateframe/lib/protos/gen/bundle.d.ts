@@ -3,8 +3,8 @@ import * as $protobuf from "protobufjs";
 /** Namespace any2api. */
 export namespace any2api {
 
-    /** Namespace gateway. */
-    namespace gateway {
+    /** Namespace gateframe. */
+    namespace gateframe {
 
         /** Represents an AdminService */
         class AdminService extends $protobuf.rpc.Service {
@@ -31,82 +31,82 @@ export namespace any2api {
              * @param request CreateConfigRequest message or plain object
              * @param callback Node-style callback called with the error, if any, and CreateConfigResponse
              */
-            public createConfig(request: any2api.gateway.ICreateConfigRequest, callback: any2api.gateway.AdminService.CreateConfigCallback): void;
+            public createConfig(request: any2api.gateframe.ICreateConfigRequest, callback: any2api.gateframe.AdminService.CreateConfigCallback): void;
 
             /**
              * Calls CreateConfig.
              * @param request CreateConfigRequest message or plain object
              * @returns Promise
              */
-            public createConfig(request: any2api.gateway.ICreateConfigRequest): Promise<any2api.gateway.CreateConfigResponse>;
+            public createConfig(request: any2api.gateframe.ICreateConfigRequest): Promise<any2api.gateframe.CreateConfigResponse>;
 
             /**
              * Calls DeleteConfig.
              * @param request DeleteConfigRequest message or plain object
              * @param callback Node-style callback called with the error, if any, and Empty
              */
-            public deleteConfig(request: any2api.gateway.IDeleteConfigRequest, callback: any2api.gateway.AdminService.DeleteConfigCallback): void;
+            public deleteConfig(request: any2api.gateframe.IDeleteConfigRequest, callback: any2api.gateframe.AdminService.DeleteConfigCallback): void;
 
             /**
              * Calls DeleteConfig.
              * @param request DeleteConfigRequest message or plain object
              * @returns Promise
              */
-            public deleteConfig(request: any2api.gateway.IDeleteConfigRequest): Promise<google.protobuf.Empty>;
+            public deleteConfig(request: any2api.gateframe.IDeleteConfigRequest): Promise<google.protobuf.Empty>;
 
             /**
              * Calls GetConfig.
              * @param request GetConfigRequest message or plain object
              * @param callback Node-style callback called with the error, if any, and Config
              */
-            public getConfig(request: any2api.gateway.IGetConfigRequest, callback: any2api.gateway.AdminService.GetConfigCallback): void;
+            public getConfig(request: any2api.gateframe.IGetConfigRequest, callback: any2api.gateframe.AdminService.GetConfigCallback): void;
 
             /**
              * Calls GetConfig.
              * @param request GetConfigRequest message or plain object
              * @returns Promise
              */
-            public getConfig(request: any2api.gateway.IGetConfigRequest): Promise<any2api.gateway.Config>;
+            public getConfig(request: any2api.gateframe.IGetConfigRequest): Promise<any2api.gateframe.Config>;
         }
 
         namespace AdminService {
 
             /**
-             * Callback as used by {@link any2api.gateway.AdminService#createConfig}.
+             * Callback as used by {@link any2api.gateframe.AdminService#createConfig}.
              * @param error Error, if any
              * @param [response] CreateConfigResponse
              */
-            type CreateConfigCallback = (error: (Error|null), response?: any2api.gateway.CreateConfigResponse) => void;
+            type CreateConfigCallback = (error: (Error|null), response?: any2api.gateframe.CreateConfigResponse) => void;
 
             /**
-             * Callback as used by {@link any2api.gateway.AdminService#deleteConfig}.
+             * Callback as used by {@link any2api.gateframe.AdminService#deleteConfig}.
              * @param error Error, if any
              * @param [response] Empty
              */
             type DeleteConfigCallback = (error: (Error|null), response?: google.protobuf.Empty) => void;
 
             /**
-             * Callback as used by {@link any2api.gateway.AdminService#getConfig}.
+             * Callback as used by {@link any2api.gateframe.AdminService#getConfig}.
              * @param error Error, if any
              * @param [response] Config
              */
-            type GetConfigCallback = (error: (Error|null), response?: any2api.gateway.Config) => void;
+            type GetConfigCallback = (error: (Error|null), response?: any2api.gateframe.Config) => void;
         }
 
         /** Properties of a Config. */
         interface IConfig {
 
             /** Config protoService */
-            protoService?: (any2api.gateway.Config.IProtoService|null);
+            protoService?: (any2api.gateframe.Config.IProtoService|null);
 
             /** Config connector */
-            connector?: (any2api.gateway.Config.IPlugin|null);
+            connector?: (any2api.gateframe.Config.IPlugin|null);
 
             /** Config intermediaries */
-            intermediaries?: (any2api.gateway.Config.IPlugin[]|null);
+            intermediaries?: (any2api.gateframe.Config.IPlugin[]|null);
 
             /** Config adapter */
-            adapter?: (any2api.gateway.Config.IPlugin|null);
+            adapter?: (any2api.gateframe.Config.IPlugin|null);
         }
 
         /** Represents a Config. */
@@ -116,19 +116,19 @@ export namespace any2api {
              * Constructs a new Config.
              * @param [properties] Properties to set
              */
-            constructor(properties?: any2api.gateway.IConfig);
+            constructor(properties?: any2api.gateframe.IConfig);
 
             /** Config protoService. */
-            public protoService?: (any2api.gateway.Config.IProtoService|null);
+            public protoService?: (any2api.gateframe.Config.IProtoService|null);
 
             /** Config connector. */
-            public connector?: (any2api.gateway.Config.IPlugin|null);
+            public connector?: (any2api.gateframe.Config.IPlugin|null);
 
             /** Config intermediaries. */
-            public intermediaries: any2api.gateway.Config.IPlugin[];
+            public intermediaries: any2api.gateframe.Config.IPlugin[];
 
             /** Config adapter. */
-            public adapter?: (any2api.gateway.Config.IPlugin|null);
+            public adapter?: (any2api.gateframe.Config.IPlugin|null);
 
             /** Config protoOrConnector. */
             public protoOrConnector?: ("protoService"|"connector");
@@ -138,23 +138,23 @@ export namespace any2api {
              * @param [properties] Properties to set
              * @returns Config instance
              */
-            public static create(properties?: any2api.gateway.IConfig): any2api.gateway.Config;
+            public static create(properties?: any2api.gateframe.IConfig): any2api.gateframe.Config;
 
             /**
-             * Encodes the specified Config message. Does not implicitly {@link any2api.gateway.Config.verify|verify} messages.
+             * Encodes the specified Config message. Does not implicitly {@link any2api.gateframe.Config.verify|verify} messages.
              * @param message Config message or plain object to encode
              * @param [writer] Writer to encode to
              * @returns Writer
              */
-            public static encode(message: any2api.gateway.IConfig, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encode(message: any2api.gateframe.IConfig, writer?: $protobuf.Writer): $protobuf.Writer;
 
             /**
-             * Encodes the specified Config message, length delimited. Does not implicitly {@link any2api.gateway.Config.verify|verify} messages.
+             * Encodes the specified Config message, length delimited. Does not implicitly {@link any2api.gateframe.Config.verify|verify} messages.
              * @param message Config message or plain object to encode
              * @param [writer] Writer to encode to
              * @returns Writer
              */
-            public static encodeDelimited(message: any2api.gateway.IConfig, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: any2api.gateframe.IConfig, writer?: $protobuf.Writer): $protobuf.Writer;
 
             /**
              * Decodes a Config message from the specified reader or buffer.
@@ -164,7 +164,7 @@ export namespace any2api {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): any2api.gateway.Config;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): any2api.gateframe.Config;
 
             /**
              * Decodes a Config message from the specified reader or buffer, length delimited.
@@ -173,7 +173,7 @@ export namespace any2api {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): any2api.gateway.Config;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): any2api.gateframe.Config;
 
             /**
              * Verifies a Config message.
@@ -187,7 +187,7 @@ export namespace any2api {
              * @param object Plain object
              * @returns Config
              */
-            public static fromObject(object: { [k: string]: any }): any2api.gateway.Config;
+            public static fromObject(object: { [k: string]: any }): any2api.gateframe.Config;
 
             /**
              * Creates a plain object from a Config message. Also converts values to other types if specified.
@@ -195,7 +195,7 @@ export namespace any2api {
              * @param [options] Conversion options
              * @returns Plain object
              */
-            public static toObject(message: any2api.gateway.Config, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static toObject(message: any2api.gateframe.Config, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
             /**
              * Converts this Config to JSON.
@@ -244,7 +244,7 @@ export namespace any2api {
                  * Constructs a new ProtoService.
                  * @param [properties] Properties to set
                  */
-                constructor(properties?: any2api.gateway.Config.IProtoService);
+                constructor(properties?: any2api.gateframe.Config.IProtoService);
 
                 /** ProtoService protoPackageName. */
                 public protoPackageName: string;
@@ -281,23 +281,23 @@ export namespace any2api {
                  * @param [properties] Properties to set
                  * @returns ProtoService instance
                  */
-                public static create(properties?: any2api.gateway.Config.IProtoService): any2api.gateway.Config.ProtoService;
+                public static create(properties?: any2api.gateframe.Config.IProtoService): any2api.gateframe.Config.ProtoService;
 
                 /**
-                 * Encodes the specified ProtoService message. Does not implicitly {@link any2api.gateway.Config.ProtoService.verify|verify} messages.
+                 * Encodes the specified ProtoService message. Does not implicitly {@link any2api.gateframe.Config.ProtoService.verify|verify} messages.
                  * @param message ProtoService message or plain object to encode
                  * @param [writer] Writer to encode to
                  * @returns Writer
                  */
-                public static encode(message: any2api.gateway.Config.IProtoService, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encode(message: any2api.gateframe.Config.IProtoService, writer?: $protobuf.Writer): $protobuf.Writer;
 
                 /**
-                 * Encodes the specified ProtoService message, length delimited. Does not implicitly {@link any2api.gateway.Config.ProtoService.verify|verify} messages.
+                 * Encodes the specified ProtoService message, length delimited. Does not implicitly {@link any2api.gateframe.Config.ProtoService.verify|verify} messages.
                  * @param message ProtoService message or plain object to encode
                  * @param [writer] Writer to encode to
                  * @returns Writer
                  */
-                public static encodeDelimited(message: any2api.gateway.Config.IProtoService, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: any2api.gateframe.Config.IProtoService, writer?: $protobuf.Writer): $protobuf.Writer;
 
                 /**
                  * Decodes a ProtoService message from the specified reader or buffer.
@@ -307,7 +307,7 @@ export namespace any2api {
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): any2api.gateway.Config.ProtoService;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): any2api.gateframe.Config.ProtoService;
 
                 /**
                  * Decodes a ProtoService message from the specified reader or buffer, length delimited.
@@ -316,7 +316,7 @@ export namespace any2api {
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): any2api.gateway.Config.ProtoService;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): any2api.gateframe.Config.ProtoService;
 
                 /**
                  * Verifies a ProtoService message.
@@ -330,7 +330,7 @@ export namespace any2api {
                  * @param object Plain object
                  * @returns ProtoService
                  */
-                public static fromObject(object: { [k: string]: any }): any2api.gateway.Config.ProtoService;
+                public static fromObject(object: { [k: string]: any }): any2api.gateframe.Config.ProtoService;
 
                 /**
                  * Creates a plain object from a ProtoService message. Also converts values to other types if specified.
@@ -338,7 +338,7 @@ export namespace any2api {
                  * @param [options] Conversion options
                  * @returns Plain object
                  */
-                public static toObject(message: any2api.gateway.Config.ProtoService, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static toObject(message: any2api.gateframe.Config.ProtoService, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
                 /**
                  * Converts this ProtoService to JSON.
@@ -371,7 +371,7 @@ export namespace any2api {
                  * Constructs a new Plugin.
                  * @param [properties] Properties to set
                  */
-                constructor(properties?: any2api.gateway.Config.IPlugin);
+                constructor(properties?: any2api.gateframe.Config.IPlugin);
 
                 /** Plugin packageName. */
                 public packageName: string;
@@ -391,23 +391,23 @@ export namespace any2api {
                  * @param [properties] Properties to set
                  * @returns Plugin instance
                  */
-                public static create(properties?: any2api.gateway.Config.IPlugin): any2api.gateway.Config.Plugin;
+                public static create(properties?: any2api.gateframe.Config.IPlugin): any2api.gateframe.Config.Plugin;
 
                 /**
-                 * Encodes the specified Plugin message. Does not implicitly {@link any2api.gateway.Config.Plugin.verify|verify} messages.
+                 * Encodes the specified Plugin message. Does not implicitly {@link any2api.gateframe.Config.Plugin.verify|verify} messages.
                  * @param message Plugin message or plain object to encode
                  * @param [writer] Writer to encode to
                  * @returns Writer
                  */
-                public static encode(message: any2api.gateway.Config.IPlugin, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encode(message: any2api.gateframe.Config.IPlugin, writer?: $protobuf.Writer): $protobuf.Writer;
 
                 /**
-                 * Encodes the specified Plugin message, length delimited. Does not implicitly {@link any2api.gateway.Config.Plugin.verify|verify} messages.
+                 * Encodes the specified Plugin message, length delimited. Does not implicitly {@link any2api.gateframe.Config.Plugin.verify|verify} messages.
                  * @param message Plugin message or plain object to encode
                  * @param [writer] Writer to encode to
                  * @returns Writer
                  */
-                public static encodeDelimited(message: any2api.gateway.Config.IPlugin, writer?: $protobuf.Writer): $protobuf.Writer;
+                public static encodeDelimited(message: any2api.gateframe.Config.IPlugin, writer?: $protobuf.Writer): $protobuf.Writer;
 
                 /**
                  * Decodes a Plugin message from the specified reader or buffer.
@@ -417,7 +417,7 @@ export namespace any2api {
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): any2api.gateway.Config.Plugin;
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): any2api.gateframe.Config.Plugin;
 
                 /**
                  * Decodes a Plugin message from the specified reader or buffer, length delimited.
@@ -426,7 +426,7 @@ export namespace any2api {
                  * @throws {Error} If the payload is not a reader or valid buffer
                  * @throws {$protobuf.util.ProtocolError} If required fields are missing
                  */
-                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): any2api.gateway.Config.Plugin;
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): any2api.gateframe.Config.Plugin;
 
                 /**
                  * Verifies a Plugin message.
@@ -440,7 +440,7 @@ export namespace any2api {
                  * @param object Plain object
                  * @returns Plugin
                  */
-                public static fromObject(object: { [k: string]: any }): any2api.gateway.Config.Plugin;
+                public static fromObject(object: { [k: string]: any }): any2api.gateframe.Config.Plugin;
 
                 /**
                  * Creates a plain object from a Plugin message. Also converts values to other types if specified.
@@ -448,7 +448,7 @@ export namespace any2api {
                  * @param [options] Conversion options
                  * @returns Plain object
                  */
-                public static toObject(message: any2api.gateway.Config.Plugin, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                public static toObject(message: any2api.gateframe.Config.Plugin, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
                 /**
                  * Converts this Plugin to JSON.
@@ -462,7 +462,7 @@ export namespace any2api {
         interface ICreateConfigRequest {
 
             /** CreateConfigRequest config */
-            config?: (any2api.gateway.IConfig|null);
+            config?: (any2api.gateframe.IConfig|null);
         }
 
         /** Represents a CreateConfigRequest. */
@@ -472,33 +472,33 @@ export namespace any2api {
              * Constructs a new CreateConfigRequest.
              * @param [properties] Properties to set
              */
-            constructor(properties?: any2api.gateway.ICreateConfigRequest);
+            constructor(properties?: any2api.gateframe.ICreateConfigRequest);
 
             /** CreateConfigRequest config. */
-            public config?: (any2api.gateway.IConfig|null);
+            public config?: (any2api.gateframe.IConfig|null);
 
             /**
              * Creates a new CreateConfigRequest instance using the specified properties.
              * @param [properties] Properties to set
              * @returns CreateConfigRequest instance
              */
-            public static create(properties?: any2api.gateway.ICreateConfigRequest): any2api.gateway.CreateConfigRequest;
+            public static create(properties?: any2api.gateframe.ICreateConfigRequest): any2api.gateframe.CreateConfigRequest;
 
             /**
-             * Encodes the specified CreateConfigRequest message. Does not implicitly {@link any2api.gateway.CreateConfigRequest.verify|verify} messages.
+             * Encodes the specified CreateConfigRequest message. Does not implicitly {@link any2api.gateframe.CreateConfigRequest.verify|verify} messages.
              * @param message CreateConfigRequest message or plain object to encode
              * @param [writer] Writer to encode to
              * @returns Writer
              */
-            public static encode(message: any2api.gateway.ICreateConfigRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encode(message: any2api.gateframe.ICreateConfigRequest, writer?: $protobuf.Writer): $protobuf.Writer;
 
             /**
-             * Encodes the specified CreateConfigRequest message, length delimited. Does not implicitly {@link any2api.gateway.CreateConfigRequest.verify|verify} messages.
+             * Encodes the specified CreateConfigRequest message, length delimited. Does not implicitly {@link any2api.gateframe.CreateConfigRequest.verify|verify} messages.
              * @param message CreateConfigRequest message or plain object to encode
              * @param [writer] Writer to encode to
              * @returns Writer
              */
-            public static encodeDelimited(message: any2api.gateway.ICreateConfigRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: any2api.gateframe.ICreateConfigRequest, writer?: $protobuf.Writer): $protobuf.Writer;
 
             /**
              * Decodes a CreateConfigRequest message from the specified reader or buffer.
@@ -508,7 +508,7 @@ export namespace any2api {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): any2api.gateway.CreateConfigRequest;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): any2api.gateframe.CreateConfigRequest;
 
             /**
              * Decodes a CreateConfigRequest message from the specified reader or buffer, length delimited.
@@ -517,7 +517,7 @@ export namespace any2api {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): any2api.gateway.CreateConfigRequest;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): any2api.gateframe.CreateConfigRequest;
 
             /**
              * Verifies a CreateConfigRequest message.
@@ -531,7 +531,7 @@ export namespace any2api {
              * @param object Plain object
              * @returns CreateConfigRequest
              */
-            public static fromObject(object: { [k: string]: any }): any2api.gateway.CreateConfigRequest;
+            public static fromObject(object: { [k: string]: any }): any2api.gateframe.CreateConfigRequest;
 
             /**
              * Creates a plain object from a CreateConfigRequest message. Also converts values to other types if specified.
@@ -539,7 +539,7 @@ export namespace any2api {
              * @param [options] Conversion options
              * @returns Plain object
              */
-            public static toObject(message: any2api.gateway.CreateConfigRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static toObject(message: any2api.gateframe.CreateConfigRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
             /**
              * Converts this CreateConfigRequest to JSON.
@@ -562,7 +562,7 @@ export namespace any2api {
              * Constructs a new CreateConfigResponse.
              * @param [properties] Properties to set
              */
-            constructor(properties?: any2api.gateway.ICreateConfigResponse);
+            constructor(properties?: any2api.gateframe.ICreateConfigResponse);
 
             /** CreateConfigResponse configId. */
             public configId: string;
@@ -572,23 +572,23 @@ export namespace any2api {
              * @param [properties] Properties to set
              * @returns CreateConfigResponse instance
              */
-            public static create(properties?: any2api.gateway.ICreateConfigResponse): any2api.gateway.CreateConfigResponse;
+            public static create(properties?: any2api.gateframe.ICreateConfigResponse): any2api.gateframe.CreateConfigResponse;
 
             /**
-             * Encodes the specified CreateConfigResponse message. Does not implicitly {@link any2api.gateway.CreateConfigResponse.verify|verify} messages.
+             * Encodes the specified CreateConfigResponse message. Does not implicitly {@link any2api.gateframe.CreateConfigResponse.verify|verify} messages.
              * @param message CreateConfigResponse message or plain object to encode
              * @param [writer] Writer to encode to
              * @returns Writer
              */
-            public static encode(message: any2api.gateway.ICreateConfigResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encode(message: any2api.gateframe.ICreateConfigResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
             /**
-             * Encodes the specified CreateConfigResponse message, length delimited. Does not implicitly {@link any2api.gateway.CreateConfigResponse.verify|verify} messages.
+             * Encodes the specified CreateConfigResponse message, length delimited. Does not implicitly {@link any2api.gateframe.CreateConfigResponse.verify|verify} messages.
              * @param message CreateConfigResponse message or plain object to encode
              * @param [writer] Writer to encode to
              * @returns Writer
              */
-            public static encodeDelimited(message: any2api.gateway.ICreateConfigResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: any2api.gateframe.ICreateConfigResponse, writer?: $protobuf.Writer): $protobuf.Writer;
 
             /**
              * Decodes a CreateConfigResponse message from the specified reader or buffer.
@@ -598,7 +598,7 @@ export namespace any2api {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): any2api.gateway.CreateConfigResponse;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): any2api.gateframe.CreateConfigResponse;
 
             /**
              * Decodes a CreateConfigResponse message from the specified reader or buffer, length delimited.
@@ -607,7 +607,7 @@ export namespace any2api {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): any2api.gateway.CreateConfigResponse;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): any2api.gateframe.CreateConfigResponse;
 
             /**
              * Verifies a CreateConfigResponse message.
@@ -621,7 +621,7 @@ export namespace any2api {
              * @param object Plain object
              * @returns CreateConfigResponse
              */
-            public static fromObject(object: { [k: string]: any }): any2api.gateway.CreateConfigResponse;
+            public static fromObject(object: { [k: string]: any }): any2api.gateframe.CreateConfigResponse;
 
             /**
              * Creates a plain object from a CreateConfigResponse message. Also converts values to other types if specified.
@@ -629,7 +629,7 @@ export namespace any2api {
              * @param [options] Conversion options
              * @returns Plain object
              */
-            public static toObject(message: any2api.gateway.CreateConfigResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static toObject(message: any2api.gateframe.CreateConfigResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
             /**
              * Converts this CreateConfigResponse to JSON.
@@ -652,7 +652,7 @@ export namespace any2api {
              * Constructs a new DeleteConfigRequest.
              * @param [properties] Properties to set
              */
-            constructor(properties?: any2api.gateway.IDeleteConfigRequest);
+            constructor(properties?: any2api.gateframe.IDeleteConfigRequest);
 
             /** DeleteConfigRequest configId. */
             public configId: string;
@@ -662,23 +662,23 @@ export namespace any2api {
              * @param [properties] Properties to set
              * @returns DeleteConfigRequest instance
              */
-            public static create(properties?: any2api.gateway.IDeleteConfigRequest): any2api.gateway.DeleteConfigRequest;
+            public static create(properties?: any2api.gateframe.IDeleteConfigRequest): any2api.gateframe.DeleteConfigRequest;
 
             /**
-             * Encodes the specified DeleteConfigRequest message. Does not implicitly {@link any2api.gateway.DeleteConfigRequest.verify|verify} messages.
+             * Encodes the specified DeleteConfigRequest message. Does not implicitly {@link any2api.gateframe.DeleteConfigRequest.verify|verify} messages.
              * @param message DeleteConfigRequest message or plain object to encode
              * @param [writer] Writer to encode to
              * @returns Writer
              */
-            public static encode(message: any2api.gateway.IDeleteConfigRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encode(message: any2api.gateframe.IDeleteConfigRequest, writer?: $protobuf.Writer): $protobuf.Writer;
 
             /**
-             * Encodes the specified DeleteConfigRequest message, length delimited. Does not implicitly {@link any2api.gateway.DeleteConfigRequest.verify|verify} messages.
+             * Encodes the specified DeleteConfigRequest message, length delimited. Does not implicitly {@link any2api.gateframe.DeleteConfigRequest.verify|verify} messages.
              * @param message DeleteConfigRequest message or plain object to encode
              * @param [writer] Writer to encode to
              * @returns Writer
              */
-            public static encodeDelimited(message: any2api.gateway.IDeleteConfigRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: any2api.gateframe.IDeleteConfigRequest, writer?: $protobuf.Writer): $protobuf.Writer;
 
             /**
              * Decodes a DeleteConfigRequest message from the specified reader or buffer.
@@ -688,7 +688,7 @@ export namespace any2api {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): any2api.gateway.DeleteConfigRequest;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): any2api.gateframe.DeleteConfigRequest;
 
             /**
              * Decodes a DeleteConfigRequest message from the specified reader or buffer, length delimited.
@@ -697,7 +697,7 @@ export namespace any2api {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): any2api.gateway.DeleteConfigRequest;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): any2api.gateframe.DeleteConfigRequest;
 
             /**
              * Verifies a DeleteConfigRequest message.
@@ -711,7 +711,7 @@ export namespace any2api {
              * @param object Plain object
              * @returns DeleteConfigRequest
              */
-            public static fromObject(object: { [k: string]: any }): any2api.gateway.DeleteConfigRequest;
+            public static fromObject(object: { [k: string]: any }): any2api.gateframe.DeleteConfigRequest;
 
             /**
              * Creates a plain object from a DeleteConfigRequest message. Also converts values to other types if specified.
@@ -719,7 +719,7 @@ export namespace any2api {
              * @param [options] Conversion options
              * @returns Plain object
              */
-            public static toObject(message: any2api.gateway.DeleteConfigRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static toObject(message: any2api.gateframe.DeleteConfigRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
             /**
              * Converts this DeleteConfigRequest to JSON.
@@ -742,7 +742,7 @@ export namespace any2api {
              * Constructs a new GetConfigRequest.
              * @param [properties] Properties to set
              */
-            constructor(properties?: any2api.gateway.IGetConfigRequest);
+            constructor(properties?: any2api.gateframe.IGetConfigRequest);
 
             /** GetConfigRequest configId. */
             public configId: string;
@@ -752,23 +752,23 @@ export namespace any2api {
              * @param [properties] Properties to set
              * @returns GetConfigRequest instance
              */
-            public static create(properties?: any2api.gateway.IGetConfigRequest): any2api.gateway.GetConfigRequest;
+            public static create(properties?: any2api.gateframe.IGetConfigRequest): any2api.gateframe.GetConfigRequest;
 
             /**
-             * Encodes the specified GetConfigRequest message. Does not implicitly {@link any2api.gateway.GetConfigRequest.verify|verify} messages.
+             * Encodes the specified GetConfigRequest message. Does not implicitly {@link any2api.gateframe.GetConfigRequest.verify|verify} messages.
              * @param message GetConfigRequest message or plain object to encode
              * @param [writer] Writer to encode to
              * @returns Writer
              */
-            public static encode(message: any2api.gateway.IGetConfigRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encode(message: any2api.gateframe.IGetConfigRequest, writer?: $protobuf.Writer): $protobuf.Writer;
 
             /**
-             * Encodes the specified GetConfigRequest message, length delimited. Does not implicitly {@link any2api.gateway.GetConfigRequest.verify|verify} messages.
+             * Encodes the specified GetConfigRequest message, length delimited. Does not implicitly {@link any2api.gateframe.GetConfigRequest.verify|verify} messages.
              * @param message GetConfigRequest message or plain object to encode
              * @param [writer] Writer to encode to
              * @returns Writer
              */
-            public static encodeDelimited(message: any2api.gateway.IGetConfigRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+            public static encodeDelimited(message: any2api.gateframe.IGetConfigRequest, writer?: $protobuf.Writer): $protobuf.Writer;
 
             /**
              * Decodes a GetConfigRequest message from the specified reader or buffer.
@@ -778,7 +778,7 @@ export namespace any2api {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): any2api.gateway.GetConfigRequest;
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): any2api.gateframe.GetConfigRequest;
 
             /**
              * Decodes a GetConfigRequest message from the specified reader or buffer, length delimited.
@@ -787,7 +787,7 @@ export namespace any2api {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): any2api.gateway.GetConfigRequest;
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): any2api.gateframe.GetConfigRequest;
 
             /**
              * Verifies a GetConfigRequest message.
@@ -801,7 +801,7 @@ export namespace any2api {
              * @param object Plain object
              * @returns GetConfigRequest
              */
-            public static fromObject(object: { [k: string]: any }): any2api.gateway.GetConfigRequest;
+            public static fromObject(object: { [k: string]: any }): any2api.gateframe.GetConfigRequest;
 
             /**
              * Creates a plain object from a GetConfigRequest message. Also converts values to other types if specified.
@@ -809,7 +809,7 @@ export namespace any2api {
              * @param [options] Conversion options
              * @returns Plain object
              */
-            public static toObject(message: any2api.gateway.GetConfigRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+            public static toObject(message: any2api.gateframe.GetConfigRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
             /**
              * Converts this GetConfigRequest to JSON.
