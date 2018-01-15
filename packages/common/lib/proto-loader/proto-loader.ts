@@ -1,10 +1,10 @@
 import * as ProtoBuf from 'protobufjs';
 import { join, dirname } from 'path';
-
+import { writeFile } from 'fs';
+import { promisify } from 'util';
 import * as tmp from 'tmp-promise';
 
 import './wrappers';
-import { writeFile } from 'fs';
 
 const googleProtoFiles = dirname(require.resolve('google-proto-files'));
 
@@ -28,18 +28,14 @@ export function loadProtoSync(filename: string) {
     return root.loadSync(filename);
 }
 
+const writeFilePromise = promisify(writeFile);
+
 export const loadProtoFromString = async (proto: string): Promise<ProtoBuf.Root> => {
     const tempProtoFile: {path: string, cleanup: () => void } = await tmp.file({postfix: '.proto'});
     
     try {
         // write proto to temp file, as protobufjs needs a filename
-        await new Promise<void>((resolve, reject) => {
-            writeFile(tempProtoFile.path, proto, (err) => {
-                if (err) { return reject(err); }
-
-                resolve();
-            });
-        });
+        await writeFilePromise(tempProtoFile.path, proto);
     
         return loadProto(tempProtoFile.path);
     } finally {

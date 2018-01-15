@@ -1,14 +1,13 @@
 import * as ProtoBuf from 'protobufjs';
 import { MessageAccessor } from '../interfaces';
-import { Message } from 'protobufjs';
 
 export class LazyMessageAccesor<T extends object> implements MessageAccessor<T> {
 
     private buffer: Buffer;
-    private message: Message<T> | { [k: string]: any };
+    private message: ProtoBuf.Message<T> | { [k: string]: any };
 
-    constructor(protected type: ProtoBuf.Type, initialValue: Buffer | Message<T>  | { [k: string]: any }) {
-        if (initialValue instanceof Buffer) {
+    constructor(protected type: ProtoBuf.Type, initialValue: Buffer | ProtoBuf.Message<T>  | { [k: string]: any }) {
+        if (Buffer.isBuffer(initialValue)) {
             this.buffer = initialValue;
         } else {
             this.message = initialValue;
@@ -27,7 +26,7 @@ export class LazyMessageAccesor<T extends object> implements MessageAccessor<T> 
         this.message = null;
     }
 
-    public getMessage(): Message<T> | { [k: string]: any } {
+    public getMessage(): ProtoBuf.Message<T> | { [k: string]: any } {
         if (!this.message) {
             this.deserialize();
         }

@@ -1,6 +1,6 @@
 import { AdapterPlugin, ConnectorPlugin, Plugin, Intermediary,
     Adapter, Connector, InitResult, IntermediaryPlugin, Callable,
-    AdapterInitResult, IntermediaryInitResult, ConnectorInitResult  } from '@any2api/gateway-common';
+    AdapterInitResult, IntermediaryInitResult, ConnectorInitResult  } from '@any2api/gateframe-common';
     
 import { Config, PluginDefinition } from './config';
 
@@ -60,6 +60,7 @@ export class AdminService {
 
         const intermediaryInitResults: IntermediaryInitResult[] = [];
 
+        config.intermediaries = config.intermediaries || [];
         const upstream =
             await config.intermediaries.reduceRight(
                 async (upPromise: Promise<{ instance: Callable, serviceDefinition }>, intermediaryDefinition)  => {
@@ -97,12 +98,13 @@ export class AdminService {
 
     private loadConnector(config: Config): ConnectorPlugin {
         if (config.protoService) {
-            return this.loadPluginPackage('@any2api/grpc-connector') as ConnectorPlugin;
+            return this.loadPluginFromPackage('@any2api/grpc-connector') as ConnectorPlugin;
         } else {
             if (config.connector.plugin) {
                 return config.connector.plugin as ConnectorPlugin;
             } else {
-                return this.loadPluginPackage(config.connector.pluginName) as ConnectorPlugin;
+                return this.loadPluginFromPackage(config.connector.packageName, config.connector.pluginName
+                    ) as ConnectorPlugin;
             }
         }
     }
@@ -111,17 +113,27 @@ export class AdminService {
         if (pluginDefinition.plugin) {
             return pluginDefinition.plugin;
         } else {
-            return this.loadPluginPackage(pluginDefinition.pluginName);
+            return this.loadPluginFromPackage(pluginDefinition.packageName, pluginDefinition.packageName);
         }
     }
 
-    private loadPluginPackage(name: string): Plugin {
-        const plugin = require(name);
+    private loadPluginFromPackage(packageName: string, pluginName?: string): Plugin {
+        const pluginPackage = require(packageName);
 
-        if (!plugin) {
-            throw new Error('Could not require plugin package');
+        if (!pluginPackage) {
+            throw new Error(`Could not require plugin package: ${packageName}`);
         }
 
+        if (!pluginName) {
+            // load package as plugin
+            return pluginPackage;
+        }
+
+        const plugin = pluginPackage[pluginName];
+        
+        if (!plugin) {
+            throw new Error(`Package '${packageName}' has no member '${pluginName}'`);
+        }
         return plugin;
     }
 

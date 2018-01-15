@@ -15,6 +15,10 @@ export interface Plugin {
     configurationTypes?: ProtoBuf.Root;
 }
 
+/**
+ * Result of a plugin initialization.
+ * Can contain information of the plugin configuration (e.g. port number).
+ */
 export interface InitResult {
     info?: any;
 }

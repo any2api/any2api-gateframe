@@ -1,4 +1,4 @@
-import { AdapterPlugin, Callable } from '@any2api/gateway-common';
+import { AdapterPlugin, Callable } from '@any2api/gateframe-common';
 import * as ProtoBuf from 'protobufjs';
 import { GrpcAdapterConfig } from './grpc-adapter-config';
 import { loadSync } from 'protobufjs';

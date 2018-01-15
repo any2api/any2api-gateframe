@@ -4,7 +4,7 @@ import { Observable } from '@reactivex/rxjs';
 import { getPortPromise } from 'portfinder';
 
 import { loadProtoFromString, GrpcMethodType, LazyMessageAccesor,
-    FromObjectStreamObservable } from '@any2api/gateway-common';
+    FromObjectStreamObservable } from '@any2api/gateframe-common';
 import { connectorPlugin } from './grpc-connector-plugin';
 import { GrpcConnectorConfig } from './config';
 import { GrpcConnector } from './grpc-connector';

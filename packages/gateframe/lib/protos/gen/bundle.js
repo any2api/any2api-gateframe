@@ -805,8 +805,11 @@
                      * Properties of a Plugin.
                      * @memberof any2api.gateway.Config
                      * @interface IPlugin
-                     * @property {string|null} [pluginName] Plugin pluginName
+                     * @property {string|null} [packageName] Plugin packageName
                      * @property {google.protobuf.IAny|null} [pluginConfig] Plugin pluginConfig
+                     * @property {string|null} [pluginName] optional
+                     * Field of the package to use as plugin.
+                     * This enabled to pack multiple plugins into one package.
                      */
     
                     /**
@@ -825,12 +828,12 @@
                     }
     
                     /**
-                     * Plugin pluginName.
-                     * @member {string} pluginName
+                     * Plugin packageName.
+                     * @member {string} packageName
                      * @memberof any2api.gateway.Config.Plugin
                      * @instance
                      */
-                    Plugin.prototype.pluginName = "";
+                    Plugin.prototype.packageName = "";
     
                     /**
                      * Plugin pluginConfig.
@@ -839,6 +842,16 @@
                      * @instance
                      */
                     Plugin.prototype.pluginConfig = null;
+    
+                    /**
+                     * optional
+                     * Field of the package to use as plugin.
+                     * This enabled to pack multiple plugins into one package.
+                     * @member {string} pluginName
+                     * @memberof any2api.gateway.Config.Plugin
+                     * @instance
+                     */
+                    Plugin.prototype.pluginName = "";
     
                     /**
                      * Creates a new Plugin instance using the specified properties.
@@ -864,10 +877,12 @@
                     Plugin.encode = function encode(message, writer) {
                         if (!writer)
                             writer = $Writer.create();
-                        if (message.pluginName != null && message.hasOwnProperty("pluginName"))
-                            writer.uint32(/* id 1, wireType 2 =*/10).string(message.pluginName);
+                        if (message.packageName != null && message.hasOwnProperty("packageName"))
+                            writer.uint32(/* id 1, wireType 2 =*/10).string(message.packageName);
                         if (message.pluginConfig != null && message.hasOwnProperty("pluginConfig"))
                             $root.google.protobuf.Any.encode(message.pluginConfig, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                        if (message.pluginName != null && message.hasOwnProperty("pluginName"))
+                            writer.uint32(/* id 3, wireType 2 =*/26).string(message.pluginName);
                         return writer;
                     };
     
@@ -903,10 +918,13 @@
                             var tag = reader.uint32();
                             switch (tag >>> 3) {
                             case 1:
-                                message.pluginName = reader.string();
+                                message.packageName = reader.string();
                                 break;
                             case 2:
                                 message.pluginConfig = $root.google.protobuf.Any.decode(reader, reader.uint32());
+                                break;
+                            case 3:
+                                message.pluginName = reader.string();
                                 break;
                             default:
                                 reader.skipType(tag & 7);
@@ -943,14 +961,17 @@
                     Plugin.verify = function verify(message) {
                         if (typeof message !== "object" || message === null)
                             return "object expected";
-                        if (message.pluginName != null && message.hasOwnProperty("pluginName"))
-                            if (!$util.isString(message.pluginName))
-                                return "pluginName: string expected";
+                        if (message.packageName != null && message.hasOwnProperty("packageName"))
+                            if (!$util.isString(message.packageName))
+                                return "packageName: string expected";
                         if (message.pluginConfig != null && message.hasOwnProperty("pluginConfig")) {
                             var error = $root.google.protobuf.Any.verify(message.pluginConfig);
                             if (error)
                                 return "pluginConfig." + error;
                         }
+                        if (message.pluginName != null && message.hasOwnProperty("pluginName"))
+                            if (!$util.isString(message.pluginName))
+                                return "pluginName: string expected";
                         return null;
                     };
     
@@ -966,13 +987,15 @@
                         if (object instanceof $root.any2api.gateway.Config.Plugin)
                             return object;
                         var message = new $root.any2api.gateway.Config.Plugin();
-                        if (object.pluginName != null)
-                            message.pluginName = String(object.pluginName);
+                        if (object.packageName != null)
+                            message.packageName = String(object.packageName);
                         if (object.pluginConfig != null) {
                             if (typeof object.pluginConfig !== "object")
                                 throw TypeError(".any2api.gateway.Config.Plugin.pluginConfig: object expected");
                             message.pluginConfig = $root.google.protobuf.Any.fromObject(object.pluginConfig);
                         }
+                        if (object.pluginName != null)
+                            message.pluginName = String(object.pluginName);
                         return message;
                     };
     
@@ -990,13 +1013,16 @@
                             options = {};
                         var object = {};
                         if (options.defaults) {
-                            object.pluginName = "";
+                            object.packageName = "";
                             object.pluginConfig = null;
+                            object.pluginName = "";
                         }
-                        if (message.pluginName != null && message.hasOwnProperty("pluginName"))
-                            object.pluginName = message.pluginName;
+                        if (message.packageName != null && message.hasOwnProperty("packageName"))
+                            object.packageName = message.packageName;
                         if (message.pluginConfig != null && message.hasOwnProperty("pluginConfig"))
                             object.pluginConfig = $root.google.protobuf.Any.toObject(message.pluginConfig, options);
+                        if (message.pluginName != null && message.hasOwnProperty("pluginName"))
+                            object.pluginName = message.pluginName;
                         return object;
                     };
     

@@ -1,4 +1,4 @@
-import { ConnectorPlugin, loadProto, loadProtoFromString } from '@any2api/gateway-common';
+import { ConnectorPlugin, loadProto, loadProtoFromString } from '@any2api/gateframe-common';
 import { loadSync } from 'protobufjs';
 import { join } from 'path';
 import { GrpcConnectorConfig } from './config';

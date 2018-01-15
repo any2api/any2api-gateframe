@@ -44,8 +44,15 @@ message Config {
   }
 
   message Plugin {
-    string plugin_name = 1; // npm package name
+    string package_name = 1; // npm package name
     google.protobuf.Any plugin_config = 2;
+
+    /**
+     *  optional
+     *  Field of the package to use as plugin.
+     *  This enabled to pack multiple plugins into one package.
+     */
+    string plugin_name = 3;
   }
 
   oneof proto_or_connector {

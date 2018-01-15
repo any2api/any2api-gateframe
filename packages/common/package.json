@@ -1,9 +1,12 @@
 {
-    "name": "@any2api/gateway-common",
+    "name": "@any2api/gateframe-common",
     "version": "0.0.1",
     "description": "package of common modules for the any2api gateway",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
+    "engines": {
+        "node": ">= 8.9.0"
+    },
     "scripts": {
         "test": "jest --coverage",
         "test:watch": "jest --watch",
@@ -35,15 +38,15 @@
     },
     "jest": {
         "transform": {
-          "^.+\\.ts?$": "ts-jest"
+            "^.+\\.ts?$": "ts-jest"
         },
         "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(js?|ts?)$",
         "moduleFileExtensions": [
-          "ts",
-          "tsx",
-          "js",
-          "jsx",
-          "json"
+            "ts",
+            "tsx",
+            "js",
+            "jsx",
+            "json"
         ]
-      }
+    }
 }

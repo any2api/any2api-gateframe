@@ -2,7 +2,7 @@ import { Observable, Subject } from '@reactivex/rxjs';
 import * as grpc from 'grpc';
 import { EventEmitter } from 'events';
 
-import { Call, MessageAccessor, GrpcMethodType } from '@any2api/gateway-common';
+import { Call, MessageAccessor, GrpcMethodType } from '@any2api/gateframe-common';
 
 export interface RequestParameters {
     method: string;

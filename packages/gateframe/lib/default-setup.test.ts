@@ -5,7 +5,7 @@ import * as ProtoBuf from 'protobufjs';
 import { writeFile } from 'fs';
 import * as tmp from 'tmp-promise';
 import { loadProtoFromString, IntermediaryPlugin, IntermediaryInitResult,
-    RequestParameters } from '@any2api/gateway-common';
+    RequestParameters } from '@any2api/gateframe-common';
 
 const protoDefinition = 'syntax = "proto3"; message M { string bar = 1; } service S { rpc foo(M) returns (M); }';
 let protoRoot: ProtoBuf.Root;

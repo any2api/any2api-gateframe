@@ -10,6 +10,11 @@ export enum GrpcMethodType {
     BidirectionalStreaming = 'bidi'
 }
 
+/**
+ * This interface defines the information that is passed through the execution chain.
+ * The intermediaries can change elements (or even create new instances)
+ * before calling the next element in the chain.
+ */
 export interface RequestParameters {
     method: { namespace: string, name: string };
     type: GrpcMethodType;
@@ -19,6 +24,10 @@ export interface RequestParameters {
     callOptions?: CallOptions;
 }
 
+/**
+ * This interface defines the information that is passed back through the execution chain.
+ * The intermediaries can change elements before returning it to the caller.
+ */
 export interface Call {
     header: Metadata;
     responseObservable: Observable<MessageAccessor<{}>>;

@@ -350,11 +350,18 @@ export namespace any2api {
             /** Properties of a Plugin. */
             interface IPlugin {
 
-                /** Plugin pluginName */
-                pluginName?: (string|null);
+                /** Plugin packageName */
+                packageName?: (string|null);
 
                 /** Plugin pluginConfig */
                 pluginConfig?: (google.protobuf.IAny|null);
+
+                /**
+                 * optional
+                 * Field of the package to use as plugin.
+                 * This enabled to pack multiple plugins into one package.
+                 */
+                pluginName?: (string|null);
             }
 
             /** Represents a Plugin. */
@@ -366,11 +373,18 @@ export namespace any2api {
                  */
                 constructor(properties?: any2api.gateway.Config.IPlugin);
 
-                /** Plugin pluginName. */
-                public pluginName: string;
+                /** Plugin packageName. */
+                public packageName: string;
 
                 /** Plugin pluginConfig. */
                 public pluginConfig?: (google.protobuf.IAny|null);
+
+                /**
+                 * optional
+                 * Field of the package to use as plugin.
+                 * This enabled to pack multiple plugins into one package.
+                 */
+                public pluginName: string;
 
                 /**
                  * Creates a new Plugin instance using the specified properties.

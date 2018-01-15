@@ -4,9 +4,10 @@ import { Observable, Subject } from '@reactivex/rxjs';
 
 import { Adapter, Callable, AdapterInitResult, GrpcMethodType,
     forEachMethodInProto, getProtoMethodInfo, MethodInfo,
-    LazyMessageAccesor, MessageAccessor, Call } from '@any2api/gateway-common';
+    LazyMessageAccesor, MessageAccessor, Call } from '@any2api/gateframe-common';
 import { GrpcAdapterConfig } from './grpc-adapter-config';
 import { Metadata, StatusObject } from 'grpc';
+import { promisify } from 'util';
 
 function serverStreamingHandler(downCall: grpc.ServerWriteableStream, upCall: Call) {
     downCall.sendMetadata(upCall.header);
@@ -80,10 +81,8 @@ export class GrpcAdapter implements Adapter {
         };
     }
 
-    public stop(): Promise<void> {
-        return new Promise((resolve) => {
-            this.server.tryShutdown(resolve);
-        });
+    public gracefullShutdown(): Promise<void> {
+        return promisify(this.server.tryShutdown).bind(this.server)();
     }
 
     private registerMethod(definition: ProtoBuf.Method) {
@@ -148,9 +147,5 @@ export class GrpcAdapter implements Adapter {
 
         call.on('data', (req: LazyMessageAccesor<{}>) => requestSubject.next(req));
         call.on('end', () => requestSubject.complete());
-    }
-
-    public gracefullShutdown(): Promise<void> {
-        return new Promise((resolve) => this.server.tryShutdown(resolve));
     }
 }

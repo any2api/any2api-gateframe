@@ -4,6 +4,9 @@
   "description": "any2api gateway",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "engines": {
+    "node": ">=8.9.0"
+  },
   "scripts": {
     "start": "ts-node lib/index.ts",
     "prepublishOnly": "npm run build",
@@ -42,7 +45,7 @@
     "typescript": "^2.6.2"
   },
   "dependencies": {
-    "@any2api/gateway-common": "file:../common",
+    "@any2api/gateframe-common": "file:../common",
     "@any2api/grpc-adapter": "file:../grpc-adapter",
     "@any2api/grpc-connector": "file:../grpc-connector",
     "@reactivex/rxjs": "^5.5.6",
