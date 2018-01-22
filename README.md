@@ -110,6 +110,7 @@ Moreover, multiple gateways (like Node.js and Golang) could be combined to run e
   * REST/Kong: https://getkong.org
   * SOAP/WSDL
   * GraphQL
+    * https://github.com/google/rejoiner
   * http://restql.b2w.io/
   * https://mmikowski.github.io/json-pure/
   * https://github.com/uber/tchannel
