@@ -106,6 +106,7 @@ Moreover, multiple gateways (like Node.js and Golang) could be combined to run e
 * Global gateway config: blacklist/whitelist of plugins
 * "Eat your own dogfood" - use adapters for admin service of gateway
 * Adapter candidates
+  * gRPC Web: https://github.com/improbable-eng/grpc-web
   * REST/HTTP
   * REST/Kong: https://getkong.org
   * SOAP/WSDL
