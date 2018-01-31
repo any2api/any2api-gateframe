@@ -1,6 +1,6 @@
-# Any2Api GateFrame common package
+# Any2Api gateframe common package
 
-This package contains type definitions and utils to be used by the GateFrame and all plugin packages.
+This package contains type definitions and utils to be used by the gateframe and all plugin packages.
 
 ## TODO
 

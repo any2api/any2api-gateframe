@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import { AdapterPlugin, ConnectorPlugin, Plugin, Intermediary,
     Adapter, Connector, InitResult, IntermediaryPlugin, Callable,
     AdapterInitResult, IntermediaryInitResult, ConnectorInitResult  } from '@any2api/gateframe-common';
@@ -35,12 +36,18 @@ export class AdminService {
     }
 
     public deleteConfig(id: string) {
-        const config = this.configDict[id];
-        return config.instance.adapter.instance.gracefullShutdown();
+        const instance = this.configDict[id].instance;
+        const shutdowns = [instance.adapter.instance, ...instance.intermediaries.map((i) => i.instance)]
+            .filter((i) => i.gracefullShutdown).map((i) => i.gracefullShutdown());
+        return Promise.all(shutdowns);
     }
 
     public getConfig(id: string): Config {
         return this.configDict[id].config;
+    }
+
+    public deleteAll() {
+        return Promise.all(_.keys(this.configDict).map((id) => this.deleteConfig(String(id))));
     }
 
     private executeConfig = async (config: Config): Promise<ConfigInstance> => {
@@ -113,7 +120,7 @@ export class AdminService {
         if (pluginDefinition.plugin) {
             return pluginDefinition.plugin;
         } else {
-            return this.loadPluginFromPackage(pluginDefinition.packageName, pluginDefinition.packageName);
+            return this.loadPluginFromPackage(pluginDefinition.packageName, pluginDefinition.pluginName);
         }
     }
 
