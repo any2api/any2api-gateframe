@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package any2api.grpc.connector;
+
+message Config {
+    string address = 1;
+    
+    bool insecure = 2;
+
+    oneof def_or_url {
+        /**
+          * The complete proto service definition as a string.
+          * All includes must be absolute URIs, as this definitions has no location.
+          * The exception are google proto definitions that start with `google`
+          * and exists in the [protobuf repository](https://github.com/google/protobuf/tree/master/src/google/protobuf)
+          * or, in the [google api repository](https://github.com/googleapis/googleapis/)
+          */
+        string proto_definition = 3;
+  
+        /**
+          * Url where to retrieve the proto service definition.
+          * All includes must be absolute URIs, as this definitions has no location.
+          * The exception are google proto definitions that start with `google`
+          * and exists in the [protobuf repository](https://github.com/google/protobuf/tree/master/src/google/protobuf)
+          * or, in the [google api repository](https://github.com/googleapis/googleapis/)
+          */
+        string proto_url = 4;
+      }
+}

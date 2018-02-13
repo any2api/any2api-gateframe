@@ -172,3 +172,11 @@ Moreover, multiple gateways (like Node.js and Golang) could be combined to run e
   * ...
 * Allow local "one-file" plugins to be loaded into any2api-gateframe during start
 * **TODO** any2api backlog: move relevant aspects to here!
+
+## Execution Architecture
+
+After the registration of service the plugins are initialized one after the other.
+The first plugin to be initialized is the connnector, then all intermediaries and at last the adapter.
+The service definition provided by the connector can be changed by every intermediary, so every plugin sees a service definition that is provided by the prescending plugin.
+
+

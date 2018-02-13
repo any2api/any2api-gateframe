@@ -1,0 +1,84 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/any.proto";
+
+package any2api.gateframe;
+
+service AdminService {
+  rpc CreateConfig (CreateConfigRequest) returns (CreateConfigResponse);
+  rpc DeleteConfig (DeleteConfigRequest) returns (google.protobuf.Empty);
+  rpc GetConfig (GetConfigRequest) returns (Config);
+}
+
+message Config {
+
+  message ProtoService {
+    // optional package name to override package in proto definition
+    string proto_package_name = 1;
+    // inline proto definition or URL to proto definition
+    oneof def_or_url {
+      /**
+        * The complete proto service definition as a string.
+        * All includes must be absolute URIs, as this definitions has no location.
+        * The exception are google proto definitions that start with `google`
+        * and exists in the [protobuf repository](https://github.com/google/protobuf/tree/master/src/google/protobuf)
+        * or, in the [google api repository](https://github.com/googleapis/googleapis/)
+        */
+      string proto_definition = 2;
+
+      /**
+        * Url where to retrieve the proto service definition.
+        * All includes must be absolute URIs, as this definitions has no location.
+        * The exception are google proto definitions that start with `google`
+        * and exists in the [protobuf repository](https://github.com/google/protobuf/tree/master/src/google/protobuf)
+        * or, in the [google api repository](https://github.com/googleapis/googleapis/)
+        */
+      string proto_url = 3;
+    }
+
+    // dns name or ip at which the service is available
+    string host = 4;
+    // port under which the service is available at the host
+    uint32 port = 5;
+  }
+
+  message Plugin {
+    string package_name = 1; // npm package name
+    google.protobuf.Any plugin_config = 2;
+
+    /**
+     *  optional
+     *  Field of the package to use as plugin.
+     *  This enabled to pack multiple plugins into one package.
+     */
+    string plugin_name = 3;
+  }
+
+  oneof proto_or_connector {
+    ProtoService proto_service = 2;
+    Plugin connector = 3;
+  }
+
+  // optional intermediaries adding additional functionality
+  repeated Plugin intermediaries = 4;
+
+  // adapter for incoming request
+  Plugin adapter = 5; 
+}
+
+message CreateConfigRequest {
+  Config config = 1;
+}
+
+message CreateConfigResponse {
+  string config_id = 1;
+}
+
+message DeleteConfigRequest {
+  string config_id = 1;
+}
+
+message GetConfigRequest {
+  string config_id = 1;
+}
