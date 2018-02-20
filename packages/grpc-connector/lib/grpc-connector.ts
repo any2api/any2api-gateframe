@@ -36,10 +36,7 @@ export class GrpcConnector implements Connector {
             .take(1)
             .subscribe(
             (request) => {
-                // workaround for argue js type checking
-                if (params.metadata) {
-                    Object.setPrototypeOf(params.metadata, Object.getPrototypeOf(new grpc.Metadata()));
-                }
+                this.prepareParameters(params);
 
                 const upstreamCall = this.client.makeUnaryRequest(
                     `/${params.method.namespace}/${params.method.name}`,
@@ -77,10 +74,7 @@ export class GrpcConnector implements Connector {
     private clientStreaming = (params: RequestParameters): Observable<Call> => {
 
         return Observable.create((observer: Observer<Call>) => {
-            // workaround for argue js type checking
-            if (params.metadata) {
-                Object.setPrototypeOf(params.metadata, Object.getPrototypeOf(new grpc.Metadata()));
-            }
+            this.prepareParameters(params);
             
             let downstreamCall: CallImplementation;
     
@@ -123,16 +117,14 @@ export class GrpcConnector implements Connector {
 
     private serverStreaming = (params: RequestParameters): Observable<Call> => {
         return Observable.create((observer: Observer<Call>) => {
+            this.prepareParameters(params);
+            
             let downstreamCall: CallImplementation;
 
             params.requestObservable
             .take(1)
             .subscribe(
             (request) => {
-                // workaround for argue js type checking
-                if (params.metadata) {
-                    Object.setPrototypeOf(params.metadata, Object.getPrototypeOf(new grpc.Metadata()));
-                }
 
                 const upstreamCall = this.client.makeServerStreamRequest(
                     `/${params.method.namespace}/${params.method.name}`,
@@ -177,10 +169,6 @@ export class GrpcConnector implements Connector {
 
     private bidirectionalStreaming = (params: RequestParameters): Observable<Call> => {
         return Observable.create((observer: Observer<Call>) => {
-            // workaround for argue js type checking
-            if (params.metadata) {
-                Object.setPrototypeOf(params.metadata, Object.getPrototypeOf(new grpc.Metadata()));
-            }
 
             let downstreamCall: CallImplementation;
 
@@ -226,5 +214,19 @@ export class GrpcConnector implements Connector {
                 () => upstreamCall.end()
             );
         });
+    }
+
+    // enshure liberal acceptance of parameters
+    private prepareParameters(params: RequestParameters) {
+        if (params.metadata) {
+            // workaround for argue js type checking
+            Object.setPrototypeOf(params.metadata, Object.getPrototypeOf(new grpc.Metadata()));
+        } else {
+            params.metadata = new grpc.Metadata();
+        }
+
+        if(!params.callOptions) {
+            params.callOptions = {} as any; // object is required, values do not need to be set
+        }
     }
 }

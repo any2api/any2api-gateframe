@@ -10,6 +10,7 @@ import { GrpcConnectorConfig } from './config';
 import { GrpcConnector } from './grpc-connector';
 import { expand } from '@reactivex/rxjs/dist/package/operators/expand';
 import { fail } from 'assert';
+import { RequestParameters } from '../dist/call';
 
 let requestMetadata: grpc.Metadata;
 let responseHeaderMetadata: grpc.Metadata;
@@ -300,4 +301,36 @@ test('bidi streaming request', (d) => {
     },
     fail);
 
+});
+
+test('prepareParameters updates prototype of metadata', () => {
+    const connector: { prepareParameters(params: RequestParameters) } = instance as any;
+
+    const params = { metadata: {} };
+    connector.prepareParameters(params as any);
+    expect(Object.getPrototypeOf(params.metadata)).toBe(Object.getPrototypeOf(new grpc.Metadata()));
+});
+
+test('prepareParameters creates metadata if falsy', () => {
+    const connector: { prepareParameters(params: RequestParameters) } = instance as any;
+
+    const params = { metadata: undefined };
+    connector.prepareParameters(params as any);
+    expect(Object.getPrototypeOf(params.metadata)).toBe(Object.getPrototypeOf(new grpc.Metadata()));
+});
+
+test('prepareParameters creates callOptions if falsy', () => {
+    const connector: { prepareParameters(params: RequestParameters) } = instance as any;
+
+    const params = { callOptions: undefined };
+    connector.prepareParameters(params as any);
+    expect(params.callOptions).toBeDefined;
+});
+
+test('prepareParameters leaves truthy callOptions unchanged', () => {
+    const connector: { prepareParameters(params: RequestParameters) } = instance as any;
+
+    const params = { callOptions: { foo: "bar" } };
+    connector.prepareParameters(params as any);
+    expect(params.callOptions).toEqual({ foo: "bar" });
 });
