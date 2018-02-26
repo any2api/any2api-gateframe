@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "ts-node lib/index.ts",
-    "prepublishOnly": "npm run build",
+    "prepublishOnly": "npm test && npm run build",
     "build": "npm run protos:generateTS && tsc -p ./lib/tsconfig.lib.json --outDir dist/ && cpx ./lib/protos/gen/**/*.* ./dist/protos/gen",
     "test": "jest --coverage",
     "test:watch": "jest --watch",
@@ -50,7 +50,7 @@
   "dependencies": {
     "@any2api/gateframe-common": "^0.0.2",
     "@any2api/grpc-adapter": "^0.0.1",
-    "@any2api/grpc-connector": "^0.0.2",
+    "@any2api/grpc-connector": "^0.0.3",
     "@reactivex/rxjs": "^5.5.6",
     "google-proto-files": "^0.14.1",
     "grpc": "^1.7.2",

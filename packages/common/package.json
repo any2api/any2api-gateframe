@@ -11,7 +11,7 @@
         "test": "jest --coverage",
         "test:watch": "jest --watch",
         "build": "tsc -p ./lib/tsconfig.lib.json --outDir dist/",
-        "prepublishOnly": "npm run build"
+        "prepublishOnly": "npm test && npm run build"
     },
     "keywords": [
         "any2api",
