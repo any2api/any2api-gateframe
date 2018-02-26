@@ -1,11 +1,14 @@
-# any2api-gateway
+# any2api-gateframe
 
 Core framework of the any2api ecosystem to expose domain/business logic through different kinds of APIs.
 By default, domain/business logic is implemented as (micro)service, exposing its functionality through a gRPC API.
+Essentially, **any2api-gateframe** is a *gateway framework* to build specific gateways:
+
+> gateframe + set of plugins + configuration = gateway
 
 **Adapters** (e.g. REST/HTTP adapter or GraphQL adapter) are implemented as plugins of the framework to expose functionality through diverse APIs.
 Another kind of plugin supported by the framework are **intermediaries** to provide reusable technical logic (like request rate limiting or authentication).
-Domain/business logic that is not exposed through a gRPC API can be connected to the any2api-gateway through **connector** plugins (such as an AWS Lambda connector or OpenAPI connector).
+Domain/business logic that is not exposed through a gRPC API can be connected to the gateway through **connector** plugins (such as an AWS Lambda connector or OpenAPI connector).
 
 All plugins should be as generic and reusable as possible to use them in conjunction with diverse plugins and services.
 Two specific plugins are part of the framework, namely the **gRPC connector** and the **gRPC adapter**.
@@ -76,9 +79,9 @@ message GetConfigResponse {
 ```
 
 This admin API can be disabled, for example for security purposes.
-An alternative to using the admin API is providing `Config` messages as JSON files that are read by the any2api-gateway during start.
+An alternative to using the admin API is providing `Config` messages as JSON files that are read by the gateway during start.
 Plugins are available as npm modules.
-They are fetched and loaded on demand when configurations are added.
+They are specified as npm dependencies at deployment time of the gateway.
 
 
 
@@ -103,10 +106,13 @@ Moreover, multiple gateways (like Node.js and Golang) could be combined to run e
 * Global gateway config: blacklist/whitelist of plugins
 * "Eat your own dogfood" - use adapters for admin service of gateway
 * Adapter candidates
+  * gRPC Web: https://github.com/improbable-eng/grpc-web
   * REST/HTTP
   * REST/Kong: https://getkong.org
   * SOAP/WSDL
   * GraphQL
+    * https://github.com/google/rejoiner
+  * http://restql.b2w.io/
   * https://mmikowski.github.io/json-pure/
   * https://github.com/uber/tchannel
   * https://github.com/mikeal/znode
@@ -139,6 +145,8 @@ Moreover, multiple gateways (like Node.js and Golang) could be combined to run e
   * CLI adapter (docs endpoint with usage info and how to install CLI tool)
     * interactive CLI using a library such as https://www.npmjs.com/package/inquirer
 * Intermediary candidates
+  * Service mesh like Envoy
+  * "Sidecar for endpoint security" (TW Tech Radar)
   * Token-based Authentication
   * API Monitoring & Prometheus Metrics Pull Interface (requests per minute, etc.)
   * Interface Filter (hide gRPC operation/parameter, etc.)
@@ -162,7 +170,7 @@ Moreover, multiple gateways (like Node.js and Golang) could be combined to run e
   * https://wrapapi.com
   * DB connector, e.g. mongodb-connector to expose DB functionality through any kind of API
   * ...
-* Allow local "one-file" plugins to be loaded into any2api-gateway during start
+* Allow local "one-file" plugins to be loaded into any2api-gateframe during start
 * **TODO** any2api backlog: move relevant aspects to here!
 
 ## Execution Architecture
