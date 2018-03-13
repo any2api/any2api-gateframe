@@ -6,6 +6,8 @@ import { Connector, RequestParameters, Call, GrpcMethodType, LazyMessageAccesor,
 import { GrpcConnectorConfig } from './config';
 import { CallImplementation } from './call';
 
+// TODO extract common code of different request handlers
+
 export class GrpcConnector implements Connector {
 
     private client: grpc.Client;
@@ -63,6 +65,10 @@ export class GrpcConnector implements Connector {
                 });
 
                 (upstreamCall as any).on('status', (status) => {
+                    if(!downstreamCall) {
+                        downstreamCall = new CallImplementation(upstreamCall, new grpc.Metadata());
+                        downstreamCall.responseObservable.complete();
+                    }
                     downstreamCall.status.next(status);
                     downstreamCall.status.complete();
                 });
@@ -102,6 +108,10 @@ export class GrpcConnector implements Connector {
             });
 
             upstreamCall.on('status', (status) => {
+                if(!downstreamCall) {
+                    downstreamCall = new CallImplementation(upstreamCall, new grpc.Metadata());
+                    downstreamCall.responseObservable.complete();
+                }
                 downstreamCall.status.next(status);
                 downstreamCall.status.complete();
             });
@@ -197,6 +207,10 @@ export class GrpcConnector implements Connector {
             });
 
             upstreamCall.on('status', (status) => {
+                if(!downstreamCall) {
+                    downstreamCall = new CallImplementation(upstreamCall, new grpc.Metadata());
+                    downstreamCall.responseObservable.complete();
+                }
                 downstreamCall.status.next(status);
                 downstreamCall.status.complete();
             });
