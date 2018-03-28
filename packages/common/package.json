@@ -1,6 +1,6 @@
 {
     "name": "@any2api/gateframe-common",
-    "version": "0.0.2",
+    "version": "0.0.2-next",
     "description": "package of common modules for the any2api gateframe",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",

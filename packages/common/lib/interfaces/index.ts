@@ -5,3 +5,4 @@ export * from './plugin';
 export * from './callable';
 export * from './request';
 export * from './message-accessor';
+export * from './info-provider';

@@ -1,9 +1,9 @@
 import { Plugin } from '@any2api/gateframe-common';
 
 export interface Config {
-    protoService?: ProtoService|null;
+    protoService?: ProtoService;
     
-    connector?: PluginDefinition |null;
+    connector?: PluginDefinition;
 
     intermediaries: PluginDefinition[];
 
@@ -11,11 +11,14 @@ export interface Config {
 }
 
 export interface ProtoService {
-    protoPackageName?: (string|null);
+    /** unique name to idenfity the instance and to query instance information */
+    name?: string;
+
+    protoPackageName?: string;
     
-    protoDefinition?: (string|null);
+    protoDefinition?: string;
     
-    protoUrl?: (string|null);
+    protoUrl?: string;
     
     host: string;
     
@@ -38,5 +41,5 @@ export interface PluginDefinition {
 
     plugin?: Plugin;
     
-    pluginConfig?: any|null;
+    pluginConfig?: any;
 }

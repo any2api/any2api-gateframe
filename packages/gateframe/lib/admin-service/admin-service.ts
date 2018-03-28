@@ -5,7 +5,7 @@ import { AdapterPlugin, ConnectorPlugin, Plugin, Intermediary,
     
 import { Config, PluginDefinition } from './config';
 
-interface ConfigInstance {
+export interface ConfigInstance {
     adapter: AdapterInitResult;
     intermediaries: IntermediaryInitResult[];
     connector: ConnectorInitResult;
@@ -18,6 +18,10 @@ export class AdminService {
 
     private idCounter = 0;
     private configDict: { [id: string]: { config: Config, instance: ConfigInstance } } = {};
+
+    public getConfigIDs() {
+        return _.keys(this.configDict);
+    }
 
     /**
      * 
@@ -43,11 +47,15 @@ export class AdminService {
     }
 
     public getConfig(id: string): Config {
-        return this.configDict[id].config;
+        return this.configDict[id] && this.configDict[id].config;
+    }
+
+    public getConfigInstance(id: string): ConfigInstance {
+        return this.configDict[id] && this.configDict[id].instance;
     }
 
     public deleteAll() {
-        return Promise.all(_.keys(this.configDict).map((id) => this.deleteConfig(String(id))));
+        return Promise.all(this.getConfigIDs().map((id) => this.deleteConfig(String(id))));
     }
 
     private executeConfig = async (config: Config): Promise<ConfigInstance> => {
